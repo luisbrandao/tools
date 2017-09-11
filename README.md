@@ -1,10 +1,11 @@
-# amazon
-AWS Suport Script
+# Amazon
+AWS Suport Scripts
 
-- list -
+# list
 
-THis script list all your AWS EC2 instances, and format the output in a nice table:
+This script list all your AWS EC2 instances, and format the output in a nice table:
 
+```sh
 +-----------------------+----------------+----------------+------------+---------+---------------------------+
 | Name                  | Private IP     | Public IP      | Type       | State   | Launch Time               |
 +-----------------------+----------------+----------------+------------+---------+---------------------------+
@@ -13,7 +14,10 @@ THis script list all your AWS EC2 instances, and format the output in a nice tab
 | prod-mongodb          | 192.168.4.124  | None           | t2.large   | running | 2016-12-27 11:44:13+00:00 |
 | prod-monyog           | 192.168.4.202  | None           | t2.large   | running | 2016-09-16 14:22:57+00:00 |
 +-----------------------+----------------+----------------+------------+---------+---------------------------+
+```
 
-- waitDeploy -
 
-This shell was desing to run inside a jenkins step: it receive a json (which is the return of the AWS code deploy cli call) and then monitors the code deploy until it finishes. If the deploy fails, jenkins will receive the failure.
+# waitDeploy
+
+This shell was designed to run inside a Jenkins step: it receive a json (which is the return of the AWS code deploy cli call) and then monitors the code deploy until it finishes. If the deploy fails, Jenkins will receive the failure.
+
