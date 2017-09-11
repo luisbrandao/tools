@@ -17,7 +17,14 @@ This script list all your AWS EC2 instances, and format the output in a nice tab
 ```
 
 
-# waitDeploy
+# waitDeploy.sh
 
-This shell was designed to run inside a Jenkins step: it receive a json (which is the return of the AWS code deploy cli call) and then monitors the code deploy until it finishes. If the deploy fails, Jenkins will receive the failure.
+This shell was desingned to run inside a jenkins step: it receive a json (which is the return of the AWS code deploy cli call) and then monitors the code deploy until it finishes. If the deploy fails, jenkins will receive the failure.
 
+# gitlab-autoclone.sh
+
+Script to clone all repos from some gitlab organization.
+
+# github-repolist.php
+
+Script to clone all repos from some github organization.
