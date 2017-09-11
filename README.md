@@ -1,0 +1,2 @@
+# amazon
+AWS Suport Script
