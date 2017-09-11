@@ -1,0 +1,77 @@
+#!/usr/bin/env python3
+
+from collections import defaultdict
+from functools import partial
+from operator import itemgetter
+from pprint import pprint
+
+from terminaltables import AsciiTable
+import boto3
+import click
+
+TABLE_HEADER = [
+    'Name',
+    'Private IP',
+    'Public IP',
+    'Type',
+    'State',
+    'Launch Time'
+]
+
+
+@click.command()
+@click.option('--column', '-c', multiple=True, type=str)
+@click.option('--region', default='sa-east-1', type=str)
+@click.option('--use-table', default=True, type=bool)
+def main(column, region, use_table):
+    if not column:
+        column = TABLE_HEADER
+
+    ec2 = boto3.resource('ec2', region)
+    rows = sorted(get_column_data(ec2), key=itemgetter('Name'))
+
+    table_data = [
+        [row[c] for c in column]
+        for row in rows
+    ]
+
+    if not use_table:
+        for row in table_data:
+            click.echo('|'.join(row))
+        return
+
+    table_data.insert(0, column)
+    print(AsciiTable(table_data).table)
+
+
+def get_column_data(resource):
+    return [
+        {
+            'Name': get_instance_name(instance),
+            'Id': instance.id,
+            'Private IP': instance.private_ip_address,
+            'Public IP': instance.public_ip_address,
+            'Type': instance.instance_type,
+            'State': instance.state['Name'],
+            'Launch Time': instance.launch_time
+        }
+        for instance in get_running_ec2_instances(resource)
+    ]
+
+
+def get_instance_name(instance):
+    for tag in instance.tags:
+        if tag['Key'] == 'Name':
+            return tag['Value']
+
+
+def get_running_ec2_instances(resource):
+    return resource.instances.filter(Filters=[{
+        'Name': u'instance-state-name',
+        'Values': [u'running']}]
+    )
+
+
+if __name__ == '__main__':
+    main()
+
