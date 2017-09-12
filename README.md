@@ -20,6 +20,23 @@ This script list all your AWS EC2 instances, and format the output in a nice tab
 
 This shell was desingned to run inside a jenkins step: it receive a json (which is the return of the AWS code deploy cli call) and then monitors the code deploy until it finishes. If the deploy fails, jenkins will receive the failure.
 
+```sh
+stage("Deploy") {
+sh "aws deploy create-deployment --region ${appRegion} " +
+  "--application-name ${appName} " +
+  "--deployment-group ${appEnv} " +
+  "--revision '{" +
+  "  \"revisionType\": \"S3\"," +
+  "  \"s3Location\": {" +
+  "    \"bucket\": \"${appBucket}\"," +
+  "    \"key\": \"jobs/Rentcars/${appName}/${env.BRANCH_NAME}/${env.BUILD_NUMBER}/${env.BUILD_TAG}.tar.gz\"," +
+  "    \"bundleType\": \"tgz\"" +
+  "  }" +
+  "}' | tee output.json"
+  sh "waitDeploy output.json ${appRegion}"
+}
+```
+
 # gitlab-autoclone.sh
 
 Script to clone all repos from some gitlab organization.
