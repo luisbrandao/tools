@@ -16,7 +16,6 @@ This script list all your AWS EC2 instances, and format the output in a nice tab
 +-----------------------+----------------+----------------+------------+---------+---------------------------+
 ```
 
-
 # waitDeploy.sh
 
 This shell was desingned to run inside a jenkins step: it receive a json (which is the return of the AWS code deploy cli call) and then monitors the code deploy until it finishes. If the deploy fails, jenkins will receive the failure.
@@ -28,3 +27,22 @@ Script to clone all repos from some gitlab organization.
 # github-repolist.php
 
 Script to clone all repos from some github organization.
+
+# checkMemory.sh
+
+Calculates and return the true memory used by the system. Usefull for monitoring scripts (Made for an old cacti server)
+
+# custom.php
+
+Custom healthcheck. It returns the CPU load true memory usage and some trivial data from the machine. Made as a custom health check for AWS. The return is curl-friendly.
+
+```sh
+luis.brandao@pc144 ~ $ curl 192.168.1.161/custom.php
+Used memory: 64%
+5 min load: 0.34
+Number of cores 4
+```
+
+# fedoraInstall
+
+My set of pos-install scripts for fedora.
