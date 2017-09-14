@@ -25,6 +25,33 @@ function get_server_cores(){
     return $cores;
 }
 
+// === Calcula o uptime
+function get_uptime() {
+  //global $text;
+  $fd = fopen('/proc/uptime', 'r');
+  $ar_buf = split(' ', fgets($fd, 4096));
+  fclose($fd);
+
+  $sys_ticks = trim($ar_buf[0]);
+
+  $min   = $sys_ticks / 60;
+  $hours = $min / 60;
+  $days  = floor($hours / 24);
+  $hours = floor($hours - ($days * 24));
+  $min   = floor($min - ($days * 60 * 24) - ($hours * 60));
+
+  if ($days != 0) {
+    $result = $days . " days ";
+  }
+
+  if ($hours != 0) {
+    $result .= $hours . " hours ";
+  }
+  $result .= $min . " minutes";
+
+  return $result;
+}
+
 // Define se a saida é via navegador ou curl
 $bl = PHP_EOL;
 if (strpos($_SERVER['HTTP_USER_AGENT'], 'curl' ) === false ){
@@ -32,9 +59,10 @@ if (strpos($_SERVER['HTTP_USER_AGENT'], 'curl' ) === false ){
 }
 
 // Exibe um sumario do status da maquina.
+echo "System uptime: " . get_uptime(). $bl;
 echo "Used memory: " . get_server_memory_usage() . "%" . $bl;
 echo "5 min load: " . get_server_load(). $bl;
-echo "Number of cores " . get_server_cores(). $bl;
+echo "Number of cores: " . get_server_cores(). $bl;
 
 if (get_server_memory_usage() > $MAXMEM){
   //http_response_code(503);
