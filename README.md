@@ -1,5 +1,5 @@
-# Amazon
-AWS Suport Scripts
+# Tools
+Assortment of random scripts
 
 # list
 
@@ -63,3 +63,10 @@ Number of cores 4
 # fedoraInstall
 
 My set of pos-install scripts for fedora.
+
+# bucket.sh
+
+Scripts to automate some bucket operations
+
+# posdeploy.sh
+Pos-deploy branch sync script.
