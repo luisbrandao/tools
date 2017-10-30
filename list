@@ -42,7 +42,6 @@ def main(column, region, use_table):
     table_data.insert(0, column)
     print(AsciiTable(table_data).table)
 
-
 def get_column_data(resource):
     return [
         {
@@ -54,9 +53,8 @@ def get_column_data(resource):
             'State': instance.state['Name'],
             'Launch Time': instance.launch_time
         }
-        for instance in get_running_ec2_instances(resource)
+        for instance in get_running_ec2_instances(resource) if instance.tags is not None
     ]
-
 
 def get_instance_name(instance):
     for tag in instance.tags:
