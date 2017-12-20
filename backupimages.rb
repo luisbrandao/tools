@@ -7,7 +7,7 @@ def makeImage(instance)
   name = getName(instance)
   instance.create_image({
     dry_run: false,
-    name: name + " - " + timestamp,
+    name: timestamp + " - " + name,
     description: "Automated backup of " + name + " - " + timestamp,
     no_reboot: true,
   })
