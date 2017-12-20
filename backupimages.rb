@@ -31,5 +31,5 @@ ec2.instances({filters: filtros}).each do |i|
   puts 'State: ' + i.state.name
   puts '-------------------'
 
-  # makeImage(i)
+  makeImage(i)
 end
