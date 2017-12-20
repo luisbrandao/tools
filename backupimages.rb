@@ -24,12 +24,12 @@ filtros = [
   {name: 'instance-state-name', values: ['running'] },
   {name: 'tag:Backup', values: ['True']}
 ]
-puts '-------------------'
+puts '--------------------------'
 ec2.instances({filters: filtros}).each do |i|
   puts 'Nome   ' + getName(i)
   puts 'ID:    ' + i.id
   puts 'State: ' + i.state.name
-  puts '-------------------'
+  puts '--------------------------'
 
   makeImage(i)
 end
