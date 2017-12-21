@@ -31,12 +31,14 @@ filtros = [
   {:name => 'instance-state-name', :values => ['running'] },
   {:name => 'tag:Backup', :values => ['True']}
 ]
-puts '--------------------------'
+puts "-------------------------------------------"
 ec2.instances({:filters => filtros}).each do |i|
-  puts 'Nome   ' + getName(i)
-  puts 'ID:    ' + i.id
-  puts 'State: ' + i.state.name
-  puts '--------------------------'
-
-  # makeImage(i)
+  begin
+    puts 'Nome   ' + getName(i)
+    makeImage(i)
+  rescue
+    puts "The image: |" + timestamp + " - " + getName(i) + "|"
+    puts "Already exists. Doing nothing"
+  end
+  puts "-------------------------------------------"
 end
