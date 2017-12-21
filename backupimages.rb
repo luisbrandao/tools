@@ -42,3 +42,4 @@ ec2.instances({:filters => filtros}).each do |i|
   end
   puts "-------------------------------------------"
 end
+exit(0) # Success
