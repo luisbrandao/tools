@@ -1,3 +1,4 @@
+#!/usr/bin/env ruby
 require 'aws-sdk-ec2'  # gem install 'aws-sdk'
 require 'optparse'
 
