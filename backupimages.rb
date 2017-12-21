@@ -1,4 +1,11 @@
-require 'aws-sdk-ec2'  # v2: require 'aws-sdk'
+require 'aws-sdk-ec2'  # gem install 'aws-sdk'
+require 'optparse'
+require 'pp'
+
+options = {:region => "sa-east-1"}
+OptionParser.new do |opt|
+  opt.on("-r", "--region [REGION]", String, "Region in which backup will be performed. ex: sa-east-1(default), us-east-1") {|o| options[:region] = o }
+end.parse!
 
 def timestamp()
     Time.now.strftime '%Y-%m-%d'
@@ -18,18 +25,18 @@ def getName(instance)
   end
 end
 
-ec2 = Aws::EC2::Resource.new(region: 'sa-east-1')
+ec2 = Aws::EC2::Resource.new(:region => options[:region])
 
 filtros = [
-  {name: 'instance-state-name', values: ['running'] },
-  {name: 'tag:Backup', values: ['True']}
+  {:name => 'instance-state-name', :values => ['running'] },
+  {:name => 'tag:Backup', :values => ['True']}
 ]
 puts '--------------------------'
-ec2.instances({filters: filtros}).each do |i|
+ec2.instances({:filters => filtros}).each do |i|
   puts 'Nome   ' + getName(i)
   puts 'ID:    ' + i.id
   puts 'State: ' + i.state.name
   puts '--------------------------'
 
-  makeImage(i)
+  # makeImage(i)
 end
