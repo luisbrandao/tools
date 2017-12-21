@@ -1,6 +1,5 @@
 require 'aws-sdk-ec2'  # gem install 'aws-sdk'
 require 'optparse'
-require 'pp'
 
 options = {:region => "sa-east-1"}
 OptionParser.new do |opt|
