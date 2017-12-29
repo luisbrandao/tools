@@ -25,8 +25,10 @@ def getName(instance)
   end
 end
 
-ec2 = Aws::EC2::Resource.new(:region => options[:region])
-
+ec2 = Aws::EC2::Resource.new(:region => options[:region],
+                             :access_key_id => 'xxxxxxxxx',
+                             :secret_access_key => 'xxxxxxxxxxxxx')
+              
 filtros = [
   {:name => 'instance-state-name', :values => ['running'] },
   {:name => 'tag:Backup', :values => ['True']}
@@ -36,9 +38,10 @@ ec2.instances({:filters => filtros}).each do |i|
   begin
     puts 'Nome   ' + getName(i)
     makeImage(i)
-  rescue
+  rescue => exception
     puts "The image: |" + timestamp + " - " + getName(i) + "|"
-    puts "Already exists. Doing nothing"
+    puts exception
+    puts "Doing nothing"
   end
   puts "-------------------------------------------"
 end
