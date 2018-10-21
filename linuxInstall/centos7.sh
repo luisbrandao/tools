@@ -1,8 +1,35 @@
+#!/bin/bash
+# ---------------------------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------[ Configuração ]-----------------------------------------------------
+devel="yes"                                                            # Instala coisas do pseudogrupo "devel"
+update_kernel="yes"                                                    # Deixa o dnf atualizar o kernel
+mate="no"                                                              # Instala coisas supondo que o ambiente gráfico é o mate
+kde="no"                                                               # Kde vai ser instalado
+jogos="no"                                                             # Instala os jogos básicos
+steam="no"                                                             # Instala a steam
+repos=""                                                               # Inicia a variável
+pacotes=""                                                             # Inicia a variável
+# ------------------------------------------------------[ Configuração ]-----------------------------------------------------
+# ---------------------------------------------------------------------------------------------------------------------------
+# Checa SELINUX =============================================================================================================
+if [ -f $(cat /etc/selinux/config | grep 'SELINUX=disabled') ] ; then
+	echo "SELINUX Ativado!"
+	echo "Deactive and reboot"
+	echo "vim /etc/selinux/config"
+
+	setenforce 0
+fi
+
+# Checa Yum =================================================================================================================
 if [ -f $(cat /etc/yum.conf | grep clean_requirements_on_remove) ] ; then
         echo "Configurando yum"
         echo "clean_requirements_on_remove=1" >> /etc/yum.conf
 fi
 
+# Seta o timezone ===========================================================================================================
+ln -sf ../usr/share/zoneinfo/America/Sao_Paulo /etc/localtime
+
+# Configuração de repositórios ==============================================================================================
 repos=""
 repos="${repos} https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm"
 repos="${repos} http://rpms.remirepo.net/enterprise/remi-release-7.rpm"
@@ -17,6 +44,8 @@ enabled=1
 gpgcheck=1
 gpgkey=https://dl-ssl.google.com/linux/linux_signing_key.pub' > /etc/yum.repos.d/google-chrome.repo
 
+
+# Desabilita serviços desnecessários ========================================================================================
 systemctl stop auditd.service
 systemctl disable auditd.service
 systemctl mask auditd.service
@@ -24,9 +53,16 @@ systemctl stop ModemManager.service
 systemctl disable ModemManager.service
 systemctl mask ModemManager.service
 
+# Remove programas inuteis ==================================================================================================
 yum remove -y abrt* postfix crash empathy hypervkvpdy qemu-guest-agent spice-vdagent open-vm-tools
 
-yum install -y system-config-keyboard byobu vim wget flash-plugin google-chrome-stable brasero
+# Instala pacotes ===========================================================================================================
+yum install -y zlib unrar bzip2 freetype-freeworld xz-lzma-compat xz lrzip p7zip p7zip-plugins lzip cabextract
+yum install -y htop iotop iftop pydf bmon pydf inxi nload
+yum install -y ntpdate fortune-mod gnome-disk-utility terminator
+yum install -y pigz pxz pbzip2
+yum install -y vim htop iotop net-tools byobu wget curl pxz pigz mlocate ntpdate psmisc telnet
+yum install -y system-config-keyboard flash-plugin google-chrome-stable brasero
 yum install -y gstreamer-plugins-bad gstreamer1-plugins-ugly gstreamer1-libav gstreamer-ffmpeg ffmpeg HandBrake-{gui,cli} libdvdcss gstreamer{,1}-plugins-ugly gstreamer-plugins-bad-nonfree gstreamer1-plugins-bad-freeworld
 yum install -y gnome-tweak-tool gnome-terminal-nautilus gnome-games gnome-games-extra gnome-icon-theme gnome-icon-theme-extras gnome-mplayer gnome-online-accounts  gnome-themes-standard gnome-weather gnome-bluetooth gnome-calculator gnome-disk-utility gnome-mplayer gnome-mplayer-nautilus gnome-system-monitor gparted gtk2-immodules im-chooser htop iotop hddtemp lm_sensors
 yum install -y mesa-dri-drivers.i686 mesa-dri-drivers.x86_64 mesa-filesystem.i686 mesa-filesystem.x86_64 mesa-libEGL.i686 mesa-libEGL.x86_64
@@ -35,7 +71,7 @@ yum install -y mesa-libGLES.i686 mesa-libGLES.x86_64 mesa-libGLES-devel.i686 mes
 yum install -y mesa-libOSMesa-devel.i686 mesa-libOSMesa-devel.x86_64 mesa-libgbm.i686 mesa-libgbm.x86_64 mesa-libgbm-devel.i686
 yum install -y mesa-libgbm-devel.x86_64 mesa-libglapi.i686 mesa-libglapi.x86_64mesa-libGLw.x86_64 mesa-libGLw.i686
 
-# Da um boost no terminal ==================================================================================================================
+# Da um boost no terminal ===================================================================================================
 wget --no-check-certificate http://techmago.sytes.net/rpm/techmago.sh
 mv techmago.sh /etc/profile.d/
 
