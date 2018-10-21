@@ -17,7 +17,8 @@ if [ -f $(cat /etc/selinux/config | grep 'SELINUX=disabled') ] ; then
 	echo "SELINUX Ativado!"
 	echo "Deactive and reboot"
 	echo "vim /etc/selinux/config"
-	exit 1
+
+	setenforce 0
 fi
 
 # Desabilita Programas inuteis no boot =====================================================================================================
@@ -37,8 +38,8 @@ systemctl mask ModemManager.service
 
 # Preparação do dnf ========================================================================================================================
 if [ -f $(cat /etc/dnf/dnf.conf | grep clean_requirements_on_remove) ] ; then
-        echo "Configurando dnf"
-        echo "clean_requirements_on_remove=true" >> /etc/dnf/dnf.conf
+  echo "Configurando dnf"
+  echo "clean_requirements_on_remove=true" >> /etc/dnf/dnf.conf
 	echo "deltarpm=0" >> /etc/dnf/dnf.conf
 fi
 
@@ -99,21 +100,21 @@ pacotes="${pacotes} pigz pxz pbzip2"
 
 
 if [ "${kde}" = yes ]; then
-        pacotes="${pacotes} kde-plasma-akonadi-calendars kde-plasma-translatoid kde-plasma-ktorrent kde-plasma-yawp"
-        pacotes="${pacotes} kde-plasma-alsa-volume kde-plasma-daisy kde-plasma-yawp kde-plasma-nm kde-plasma-activitymanager"
-        pacotes="${pacotes} kde-plasma-folderview kde-plasma-ktorrent kde-plasma-nm kde-plasma-publictransport"
-        pacotes="${pacotes} kde-plasma-qstardict kde-plasma-quickaccess kmymoney"
-        pacotes="${pacotes} gnome-system-monitor"
+	pacotes="${pacotes} kde-plasma-akonadi-calendars kde-plasma-translatoid kde-plasma-ktorrent kde-plasma-yawp"
+	pacotes="${pacotes} kde-plasma-alsa-volume kde-plasma-daisy kde-plasma-yawp kde-plasma-nm kde-plasma-activitymanager"
+	pacotes="${pacotes} kde-plasma-folderview kde-plasma-ktorrent kde-plasma-nm kde-plasma-publictransport"
+	pacotes="${pacotes} kde-plasma-qstardict kde-plasma-quickaccess kmymoney"
+	pacotes="${pacotes} gnome-system-monitor"
 fi
 if [ "${devel}" = yes ]; then
-        pacotes="${pacotes} unison sshfs byobu nfs-utils "
+	pacotes="${pacotes} unison sshfs byobu nfs-utils "
 fi
 if [ "${mate}" = yes ]; then
-        pacotes="${pacotes} mate-applets mate-screensaver mate-themes mate-menu-editor mate-sensors-applet"
+	pacotes="${pacotes} mate-applets mate-screensaver mate-themes mate-menu-editor mate-sensors-applet"
 fi
 if [$(rpm -q gnome-session > /dev/null) $? -eq 0 ]; then
-        pacotes="${pacotes} nautilus-dropbox nautilus-open-terminal evince-nautilus easytag-nautilus nextcloud-client-nautilus"
-        pacotes="${pacotes} gnome-tweak-tool chrome-gnome-shell"
+	pacotes="${pacotes} nautilus-dropbox nautilus-open-terminal evince-nautilus easytag-nautilus nextcloud-client-nautilus"
+	pacotes="${pacotes} gnome-tweak-tool chrome-gnome-shell"
 fi
 
 # Internet =================================================================================================================================
@@ -122,7 +123,7 @@ pacotes="${pacotes} flash-plugin firefox"
 pacotes="${pacotes} mirall pidgin youtube-dl purple-plugin_pack-pidgin"
 pacotes="${pacotes} thunderbird thunderbird-lightning"
 if [ "${devel}" = yes ]; then
-        pacotes="${pacotes} nmap-frontend wireshark-gnome"
+	pacotes="${pacotes} nmap-frontend wireshark-gnome"
 fi
 
 
@@ -135,11 +136,11 @@ pacotes="${pacotes} brasero skype"
 
 # Jogos ====================================================================================================================================
 if [ "${jogos}" = yes ]; then
-        pacotes="${pacotes} five-or-more four-in-a-row gnome-klotski gnome-mahjongg gnome-nibbles gnome-robots aisleriot"
-        pacotes="${pacotes} gnome-tetravex lightsoff quadrapassel tali  gnome-mines gnome-sudoku iagno swell-foop"
+	pacotes="${pacotes} five-or-more four-in-a-row gnome-klotski gnome-mahjongg gnome-nibbles gnome-robots aisleriot"
+	pacotes="${pacotes} gnome-tetravex lightsoff quadrapassel tali  gnome-mines gnome-sudoku iagno swell-foop"
 fi
 if [ "${steam}" = yes ]; then
-        pacotes="${pacotes} steam"
+	pacotes="${pacotes} steam"
 fi
 
 # Escritorio ===============================================================================================================================
@@ -154,19 +155,18 @@ pacotes="${pacotes} mesa-libGLU.i686 mesa-libGLU.x86_64 python-gpgme"
 pacotes="${pacotes} libpng libpng.i686 cups-libs cups-libs.i686 nss-mdns nss-mdns.i686 lcms-libs lcms-libs.i686 lcms2.i686 lcms2"
 pacotes="${pacotes} kernel-tools kernel-tools-libs kernel-headers kernel-devel kernel-modules kernel-modules-extra"
 if [ "${devel}" = yes ]; then
-        pacotes="${pacotes} audit-libs-devel binutils-devel bison elfutils-devel hmaccalc newt-devel pciutils-devel python-devel"
-        pacotes="${pacotes} rpm-build rpmdevtools perl-ExtUtils-Embed"
-        pacotes="${pacotes} libunwind-devel numactl-devel asciidoc pesign xmlto"
-        pacotes="${pacotes} gcc gcc-c++ curl make patch glib2-devel glib-devel"
-        pacotes="${pacotes} sqliteman sqlite sqlite-devel sqlite2-devel"
-        pacotes="${pacotes} opencv-devel-docs opencv opencv-devel chrpath libtiff-devel OpenEXR-devel numpy python-sphinx"
-        pacotes="${pacotes} v8-devel zlib-devel nodejs"
-        pacotes="${pacotes} cmake-gui openssl-libs git-core readline readline-devel zlib-devel libyaml-devel"
-        pacotes="${pacotes} libffi-devel libxslt-devel openssl openssl-devel"
-        pacotes="${pacotes} bison-devel bison-devel.i686 flex-devel flex-devel.i686 glibc-devel glibc-devel.i686"
-        pacotes="${pacotes} python-pep8 pyflakes pygame PyOpenGL PyYAML"
+  pacotes="${pacotes} audit-libs-devel binutils-devel bison elfutils-devel hmaccalc newt-devel pciutils-devel python-devel"
+  pacotes="${pacotes} rpm-build rpmdevtools perl-ExtUtils-Embed"
+  pacotes="${pacotes} libunwind-devel numactl-devel asciidoc pesign xmlto"
+  pacotes="${pacotes} gcc gcc-c++ curl make patch glib2-devel glib-devel"
+  pacotes="${pacotes} sqliteman sqlite sqlite-devel sqlite2-devel"
+  pacotes="${pacotes} opencv-devel-docs opencv opencv-devel chrpath libtiff-devel OpenEXR-devel numpy python-sphinx"
+  pacotes="${pacotes} v8-devel zlib-devel nodejs"
+  pacotes="${pacotes} cmake-gui openssl-libs git-core readline readline-devel zlib-devel libyaml-devel"
+  pacotes="${pacotes} libffi-devel libxslt-devel openssl openssl-devel"
+  pacotes="${pacotes} bison-devel bison-devel.i686 flex-devel flex-devel.i686 glibc-devel glibc-devel.i686"
+  pacotes="${pacotes} python-pep8 pyflakes pygame PyOpenGL PyYAML"
 	pacotes="${pacotes} docker-ce rsyslog hub"
-
 fi
 
 dnf -y --skip-broken --allowerasing install ${pacotes}
@@ -220,7 +220,7 @@ fi
 
 # Instala o pacote de linguas ==============================================================================================================
 if [ "${kde}" = yes ]; then
-        dnf -y install kde-i18n-Brazil kde-l10n-Brazil
+	dnf -y install kde-i18n-Brazil kde-l10n-Brazil
 fi
 
 # Instalar java ============================================================================================================================
