@@ -1,11 +1,6 @@
 #!/bin/bash
 # ---------------------------------------------------------------------------------------------------------------------------
 # ------------------------------------------------------[ Configuração ]-----------------------------------------------------
-devel="yes"                                                            # Instala coisas do pseudogrupo "devel"
-update_kernel="yes"                                                    # Deixa o dnf atualizar o kernel
-mate="no"                                                              # Instala coisas supondo que o ambiente gráfico é o mate
-jogos="no"                                                             # Instala os jogos básicos
-steam="no"                                                             # Instala a steam
 repos=""                                                               # Inicia a variável
 pacotes=""                                                             # Inicia a variável
 # ------------------------------------------------------[ Configuração ]-----------------------------------------------------
@@ -82,6 +77,7 @@ yum install -y wget curl telnet
 # Gnome
 yum install -y brasero gnome-tweak-tool gnome-terminal-nautilus gnome-games gnome-games-extra gnome-icon-theme gnome-icon-theme-extras gnome-system-monitor
 yum install -y gnome-mplayer gnome-mplayer-nautilus gnome-online-accounts gnome-themes-standard gnome-weather gnome-bluetooth gnome-calculator gnome-disk-utility
+yum install -y gnome-shell-extension-pidgin gnome-shell-extension-openweather gnome-shell-browser-plugin
 
 # Desenvolvimento
 yum install -y gtk2-immodules im-chooser
