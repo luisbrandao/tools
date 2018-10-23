@@ -18,7 +18,7 @@ if [ -f $(cat /etc/selinux/config | grep 'SELINUX=disabled') ] ; then
 	echo "Deactive and reboot"
 	echo "vim /etc/selinux/config"
 
-	setenforce 0
+	exit 1
 fi
 
 # Desabilita Programas inuteis no boot =====================================================================================================
