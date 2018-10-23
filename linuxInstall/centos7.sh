@@ -37,13 +37,12 @@ repos="${repos} http://li.nux.ro/download/nux/dextop/el7/x86_64/nux-dextop-relea
 
 yum -y install --nogpgcheck ${repos} yum-utils
 
-echo '[google-chrome]
-name=google-chrome
-baseurl=http://dl.google.com/linux/chrome/rpm/stable/$basearch
-enabled=1
-gpgcheck=1
-gpgkey=https://dl-ssl.google.com/linux/linux_signing_key.pub' > /etc/yum.repos.d/google-chrome.repo
+yum-config-manager --add-repo=http://negativo17.org/repos/epel-negativo17.repo
+yum-config-manager --add-repo=https://techmago.sytes.net/rpm/google-chrome.repo
+yum-config-manager --add-repo=https://techmago.sytes.net/rpm/techmago-centos.repo
 
+yum-config-manager --enable remi centosplus
+yum-config-manager --disable epel-bitcoin epel-cdrtools epel-games epel-multimedia epel-nvidia epel-rar epel-spotify epel-steam epel-uld
 
 # Desabilita serviços desnecessários ========================================================================================
 systemctl stop auditd.service
@@ -54,9 +53,10 @@ systemctl disable ModemManager.service
 systemctl mask ModemManager.service
 
 # Remove programas inuteis ==================================================================================================
-yum remove -y abrt* postfix crash empathy hypervkvpdy qemu-guest-agent spice-vdagent open-vm-tools
+yum remove -y PackageKit-yum abrt* postfix crash empathy hypervkvpdy qemu-guest-agent spice-vdagent open-vm-tools
 
 # Instala pacotes ===========================================================================================================
+yum install -y vlc spotify-client smplayer
 yum install -y zlib unrar bzip2 freetype-freeworld xz-lzma-compat xz lrzip p7zip p7zip-plugins lzip cabextract
 yum install -y htop iotop iftop pydf bmon pydf inxi nload
 yum install -y ntpdate fortune-mod gnome-disk-utility terminator
@@ -70,6 +70,16 @@ yum install -y mesa-libEGL-devel.i686 mesa-libEGL-devel.x86_64 mesa-libGL.i686 m
 yum install -y mesa-libGLES.i686 mesa-libGLES.x86_64 mesa-libGLES-devel.i686 mesa-libGLES-devel.x86_64 mesa-libGLU.i686 mesa-libGLU.x86_64 mesa-libGLU-devel.i686 mesa-libGLU-devel.x86_64 mesa-libGLw-devel.i686 mesa-libGLw-devel.x86_64 mesa-libOSMesa.i686 mesa-libOSMesa.x86_64
 yum install -y mesa-libOSMesa-devel.i686 mesa-libOSMesa-devel.x86_64 mesa-libgbm.i686 mesa-libgbm.x86_64 mesa-libgbm-devel.i686
 yum install -y mesa-libgbm-devel.x86_64 mesa-libglapi.i686 mesa-libglapi.x86_64mesa-libGLw.x86_64 mesa-libGLw.i686
+yum install -y libdc1394-devel libmodplug-devel libv4l-devel libva-devel openal-soft-devel openjpeg-devel opus-devel schroedinger-devel
+yum install -y soxr-devel texinfo x265-devel ilbc-devel SDL-devel a52dec-devel aalib-devel bzip2-devel alsa-lib-devel enca-devel faad2-devel
+yum install -y ffmpeg-devel fribidi-devel giflib-devel gsm-devel gtk2-devel ladspa-devel lame-devel libXinerama-devel libXScrnSaver-devel
+yum install -y libXv-devel libXvMC-devel libass-devel libbluray-devel libbs2b-devel libcaca-devel libcdio-paranoia-devel libdca-devel
+yum install -y libdv-devel libdvdnav-devel libmpeg2-devel libmpg123-devel librtmp-devel libtheora-devel libvdpau-devel libvorbis-devel
+yum install -y lirc-devel lzo-devel pulseaudio-libs-devel speex-devel twolame-devel x264-devel xvidcore-devel yasm dbus-glib-devel
+yum install -y gtk3-devel libcurl-devel libgda-devel libgpod-devel libmusicbrainz3-devel libnotify-devel nautilus-devel nemo-devel
+yum install -y qt5-linguist qt5-qtbase-devel qt5-qtscript-devel qt5-qttools-devel qt5-qtwebkit-devel qtsingleapplication-qt5-devel
+yum install -y dirac-devel texi2html
+
 
 # Da um boost no terminal ===================================================================================================
 wget --no-check-certificate http://techmago.sytes.net/rpm/techmago.sh
@@ -85,20 +95,6 @@ yum -y install --nogpgcheck fluendo-codecs-mp3-17-3.i386.rpm
 rm -f fluendo-codecs-mp3-17-3.i386.rpm
 
 yum update -y --skip-broken
-
-yum-config-manager --add-repo=http://negativo17.org/repos/epel-negativo17.repo
-
-yum remove -y mencoder mplayer gstreamer-plugins-ugly a52dec
-
-yum install -y libdc1394-devel libmodplug-devel libv4l-devel libva-devel openal-soft-devel openjpeg-devel opus-devel schroedinger-devel
-yum install -y soxr-devel texinfo x265-devel ilbc-devel SDL-devel a52dec-devel aalib-devel bzip2-devel alsa-lib-devel enca-devel faad2-devel
-yum install -y ffmpeg-devel fribidi-devel giflib-devel gsm-devel gtk2-devel ladspa-devel lame-devel libXinerama-devel libXScrnSaver-devel
-yum install -y libXv-devel libXvMC-devel libass-devel libbluray-devel libbs2b-devel libcaca-devel libcdio-paranoia-devel libdca-devel
-yum install -y libdv-devel libdvdnav-devel libmpeg2-devel libmpg123-devel librtmp-devel libtheora-devel libvdpau-devel libvorbis-devel
-yum install -y lirc-devel lzo-devel pulseaudio-libs-devel speex-devel twolame-devel x264-devel xvidcore-devel yasm dbus-glib-devel
-yum install -y gtk3-devel libcurl-devel libgda-devel libgpod-devel libmusicbrainz3-devel libnotify-devel nautilus-devel nemo-devel
-yum install -y qt5-linguist qt5-qtbase-devel qt5-qtscript-devel qt5-qttools-devel qt5-qtwebkit-devel qtsingleapplication-qt5-devel
-yum install -y dirac-devel texi2html
 
 # Atom =====================================================================================================================================
 wget https://atom.io/download/rpm -O atom.rpm
