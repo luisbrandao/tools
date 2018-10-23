@@ -43,6 +43,9 @@ if [ -f $(cat /etc/dnf/dnf.conf | grep clean_requirements_on_remove) ] ; then
 	echo "deltarpm=0" >> /etc/dnf/dnf.conf
 fi
 
+# Seta o timezone ===========================================================================================================
+ln -sf ../usr/share/zoneinfo/America/Sao_Paulo /etc/localtime
+
 # Gambi do vim =============================================================================================================================
 rpm -ev --nodeps vim-minimal
 dnf install -y vim
@@ -60,6 +63,7 @@ repos="${repos} http://mirror.yandex.ru/fedora/russianfedora/russianfedora/nonfr
 dnf -y install --nogpgcheck ${repos}
 
 dnf config-manager --add-repo=https://download.docker.com/linux/fedora/docker-ce.repo
+dnf config-manager --add-repo=https://techmago.sytes.net/rpm/google-chrome.repo
 dnf config-manager --add-repo https://download.sublimetext.com/rpm/stable/x86_64/sublime-text.repo
 dnf config-manager --add-repo=http://negativo17.org/repos/fedora-negativo17.repo
 dnf config-manager --set-enabled remi
@@ -70,15 +74,6 @@ dnf -y update
 # Fazer o cache do dnf =====================================================================================================================
 dnf clean all
 dnf makecache
-
-# instala o google chrome ==============================================================================================================
-echo '[google-chrome]
-name=google-chrome
-baseurl=http://dl.google.com/linux/chrome/rpm/stable/$basearch
-enabled=1
-gpgcheck=1
-gpgkey=https://dl-ssl.google.com/linux/linux_signing_key.pub' > /etc/yum.repos.d/google-chrome.repo
-dnf install -y google-chrome-stable
 
 # Remove porcarias: ========================================================================================================================
 dnf -y remove abrt dracut-config-rescue irqbalance mcelog open-vm-tools sendmail spice-vdagent iscsi-initiator-utils libvirt-client tigervl vinagre selinux-policy audit httpd tigervnc firstboot hexchat claws-mail exaile parole
@@ -119,7 +114,7 @@ fi
 
 # Internet =================================================================================================================================
 pacotes="${pacotes} transmission filezilla"
-pacotes="${pacotes} flash-plugin firefox"
+pacotes="${pacotes} flash-plugin firefox google-chrome-stable"
 pacotes="${pacotes} mirall pidgin youtube-dl purple-plugin_pack-pidgin"
 pacotes="${pacotes} thunderbird thunderbird-lightning"
 if [ "${devel}" = yes ]; then

@@ -4,7 +4,6 @@
 devel="yes"                                                            # Instala coisas do pseudogrupo "devel"
 update_kernel="yes"                                                    # Deixa o dnf atualizar o kernel
 mate="no"                                                              # Instala coisas supondo que o ambiente gráfico é o mate
-kde="no"                                                               # Kde vai ser instalado
 jogos="no"                                                             # Instala os jogos básicos
 steam="no"                                                             # Instala a steam
 repos=""                                                               # Inicia a variável
@@ -52,22 +51,44 @@ systemctl stop ModemManager.service
 systemctl disable ModemManager.service
 systemctl mask ModemManager.service
 
+# Da um boost no terminal ===================================================================================================
+wget --no-check-certificate http://techmago.sytes.net/rpm/techmago.sh
+mv techmago.sh /etc/profile.d/
+
 # Remove programas inuteis ==================================================================================================
 yum remove -y PackageKit-yum abrt* postfix crash empathy hypervkvpdy qemu-guest-agent spice-vdagent open-vm-tools
 
+# Executa a primeira atualização de sistema =================================================================================
+yum update -y --skip-broken
+
 # Instala pacotes ===========================================================================================================
+# Sistema
+yum install -y pigz pxz pbzip2 zlib unrar bzip2 xz-lzma-compat xz lrzip p7zip p7zip-plugins lzip cabextract
+yum install -y htop iotop iftop pydf bmon pydf inxi nload ntpdate fortune-mod
+yum install -y net-tools byobu mlocate psmisc system-config-keyboard hddtemp lm_sensors
+
+# Media
 yum install -y vlc spotify-client smplayer
-yum install -y zlib unrar bzip2 freetype-freeworld xz-lzma-compat xz lrzip p7zip p7zip-plugins lzip cabextract
-yum install -y htop iotop iftop pydf bmon pydf inxi nload
-yum install -y ntpdate fortune-mod gnome-disk-utility terminator
-yum install -y pigz pxz pbzip2
-yum install -y vim htop iotop net-tools byobu wget curl pxz pigz mlocate ntpdate psmisc telnet
-yum install -y system-config-keyboard flash-plugin google-chrome-stable brasero
-yum install -y gstreamer-plugins-bad gstreamer1-plugins-ugly gstreamer1-libav gstreamer-ffmpeg ffmpeg HandBrake-{gui,cli} libdvdcss gstreamer{,1}-plugins-ugly gstreamer-plugins-bad-nonfree gstreamer1-plugins-bad-freeworld
-yum install -y gnome-tweak-tool gnome-terminal-nautilus gnome-games gnome-games-extra gnome-icon-theme gnome-icon-theme-extras gnome-mplayer gnome-online-accounts  gnome-themes-standard gnome-weather gnome-bluetooth gnome-calculator gnome-disk-utility gnome-mplayer gnome-mplayer-nautilus gnome-system-monitor gparted gtk2-immodules im-chooser htop iotop hddtemp lm_sensors
+yum install -y gstreamer-plugins-bad gstreamer1-plugins-ugly gstreamer1-libav gstreamer-ffmpeg ffmpeg HandBrake-{gui,cli}
+yum install -y libdvdcss gstreamer{,1}-plugins-ugly gstreamer-plugins-bad-nonfree gstreamer1-plugins-bad-freeworld
+
+# Escritorio
+yum install -y gnome-disk-utility terminator freetype-freeworld
+yum install -y vim flash-plugin google-chrome-stable gparted
+
+# Internet
+yum install -y wget curl telnet
+
+# Gnome
+yum install -y brasero gnome-tweak-tool gnome-terminal-nautilus gnome-games gnome-games-extra gnome-icon-theme gnome-icon-theme-extras gnome-system-monitor
+yum install -y gnome-mplayer gnome-mplayer-nautilus gnome-online-accounts gnome-themes-standard gnome-weather gnome-bluetooth gnome-calculator gnome-disk-utility
+
+# Desenvolvimento
+yum install -y gtk2-immodules im-chooser
 yum install -y mesa-dri-drivers.i686 mesa-dri-drivers.x86_64 mesa-filesystem.i686 mesa-filesystem.x86_64 mesa-libEGL.i686 mesa-libEGL.x86_64
 yum install -y mesa-libEGL-devel.i686 mesa-libEGL-devel.x86_64 mesa-libGL.i686 mesa-libGL.x86_64 mesa-libGL-devel.i686 mesa-libGL-devel.x86_64
-yum install -y mesa-libGLES.i686 mesa-libGLES.x86_64 mesa-libGLES-devel.i686 mesa-libGLES-devel.x86_64 mesa-libGLU.i686 mesa-libGLU.x86_64 mesa-libGLU-devel.i686 mesa-libGLU-devel.x86_64 mesa-libGLw-devel.i686 mesa-libGLw-devel.x86_64 mesa-libOSMesa.i686 mesa-libOSMesa.x86_64
+yum install -y mesa-libGLES.i686 mesa-libGLES.x86_64 mesa-libGLES-devel.i686 mesa-libGLES-devel.x86_64 mesa-libGLU.i686 mesa-libGLU.x86_64 mesa-libGLU-devel.i68
+yum install -y mesa-libGLU-devel.x86_64 mesa-libGLw-devel.i686 mesa-libGLw-devel.x86_64 mesa-libOSMesa.i686 mesa-libOSMesa.x86_64
 yum install -y mesa-libOSMesa-devel.i686 mesa-libOSMesa-devel.x86_64 mesa-libgbm.i686 mesa-libgbm.x86_64 mesa-libgbm-devel.i686
 yum install -y mesa-libgbm-devel.x86_64 mesa-libglapi.i686 mesa-libglapi.x86_64mesa-libGLw.x86_64 mesa-libGLw.i686
 yum install -y libdc1394-devel libmodplug-devel libv4l-devel libva-devel openal-soft-devel openjpeg-devel opus-devel schroedinger-devel
@@ -80,27 +101,21 @@ yum install -y gtk3-devel libcurl-devel libgda-devel libgpod-devel libmusicbrain
 yum install -y qt5-linguist qt5-qtbase-devel qt5-qtscript-devel qt5-qttools-devel qt5-qtwebkit-devel qtsingleapplication-qt5-devel
 yum install -y dirac-devel texi2html
 
+# Atom ======================================================================================================================
+wget https://atom.io/download/rpm -O atom.rpm
+yum -y install atom.rpm
+rm -f atom.rpm
 
-# Da um boost no terminal ===================================================================================================
-wget --no-check-certificate http://techmago.sytes.net/rpm/techmago.sh
-mv techmago.sh /etc/profile.d/
-
+# Instala um pacote de senhas do windows ====================================================================================
 wget --no-check-certificate http://techmago.sytes.net/rpm/fontesWindows.tar.bz2
 tar -xjf fontesWindows.tar.bz2
 mv fontesWindows /usr/share/fonts/
 rm -f fontesWindows.tar.bz2
 
+# Fluendo mp3 codecs ========================================================================================================
 wget --no-check-certificate http://techmago.sytes.net/rpm/fluendo-codecs-mp3-17-3.i386.rpm
 yum -y install --nogpgcheck fluendo-codecs-mp3-17-3.i386.rpm
 rm -f fluendo-codecs-mp3-17-3.i386.rpm
-
-yum update -y --skip-broken
-
-# Atom =====================================================================================================================================
-wget https://atom.io/download/rpm -O atom.rpm
-yum -y install atom.rpm
-rm -f atom.rpm
-
 
 # Java =====================================================================================================================================
 wget --no-check-certificate http://techmago.sytes.net/rpm/jre.rpm
