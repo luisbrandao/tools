@@ -61,7 +61,7 @@ tar -I "${COMPRESSCMD}" -cf ${DIRBACKUP}/${FILENAME} ./ #>/dev/null 2>&1
 
 echo "======================================================================================================================"
 echo "Transferindo arquivo para o dropbox"
-#bash /root/bin/dropbox_uploader.sh upload "${DIRBACKUP}/${FILENAME}" "mysql/${FILENAME}"
+bash /root/bin/dropbox_uploader.sh upload "${DIRBACKUP}/${FILENAME}" "mysql/${FILENAME}"
 
 echo "======================================================================================================================"
 echo "Serão removidos os aquivos:"
