@@ -10,6 +10,7 @@ OptionParser.new do |opt|
   opt.on("-t", "--token [token]", String, "gitlab private token") {|o| options[:token] = o }
   opt.on("-u", "--url [url]", String, "gitlab endpoint url") {|o| options[:url] = o }
   opt.on("-f", "--full", "recreate all default branches") {|o| options[:full] = 0 }
+  opt.on("-h", "--help", "Print this help") {puts opt ; puts "Usage: recriaBranch.rb group/reponame branch1 branch2 branch3"; exit}
 end.parse!
 
 gitlab = Gitlab.client(endpoint: options[:url], private_token: options[:token])
