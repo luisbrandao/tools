@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 require "gitlab"
 require 'optparse'
+require 'pp'
 
 options = {:token => "",
            :url => "https://git.sascar.com.br/api/v4",
@@ -20,7 +21,7 @@ if options[:full] == 0
   else
     branches = ['desenvolvimento', 'testes_integrados', 'homologacao']
     puts "Doing for:"
-    puts branches
+    pp branches
   end
 elsif (ARGV.length < 2)
   abort ("We need at least 2 arguments")
