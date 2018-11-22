@@ -10,7 +10,6 @@ import logging
 import click
 
 logger = logging.getLogger(__name__)
-#handler = logging.FileHandler('dyndns_route53.log')
 handler = logging.StreamHandler(sys.stdout)
 formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
 handler.setFormatter(formatter)
@@ -32,7 +31,7 @@ def resolve_name_ip(name):
 @click.command()
 @click.option('--hosted-zone', '-z', 'HOSTED_ZONE', type=str, required=True, help='Select AWS hosted zone id')
 @click.option('--domain-name', '-n', 'DOMAIN_NAME', type=str, required=True, help='Select the domain to be updated')
-def main():
+def main(HOSTED_ZONE, DOMAIN_NAME):
 
     # Get your ip using a public service
     current_ip = get('https://ident.me').text
