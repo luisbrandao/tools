@@ -1,6 +1,4 @@
 #!/bin/bash
-# This should sit on /etc/profile.d
-
 # If not running interactively, don't do anything
 [ -z "$PS1" ] && return
 
@@ -58,9 +56,12 @@ if [ -x /usr/bin/fortune ]; then
         fortune
 fi
 
+# Add an "alert" alias for long running commands.  Use like so:
+#   sleep 10; alert
+alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
+
 alias ll='ls -l'
 alias la='ls -A'
-alias l='ls -CF'
 alias vi='vim'
 alias tm="tail -f /var/log/messages"
 alias tapache="tail -f /var/log/httpd/*_log"
@@ -74,3 +75,4 @@ alias xextract="tar -Jxxvf"
 alias ftpython='echo "Files will be avaliable at $(hostname -I) port 8000" ; ftpython'
 alias pull_stage="hub pull-request -b stage -m"
 alias pull_master="hub pull-request -b master -m"
+alias tnginx="tail -f /var/log/nginx/*.log /var/log/nginx/*.err"
