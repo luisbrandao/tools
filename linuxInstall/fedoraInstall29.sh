@@ -22,12 +22,6 @@ if [ -f $(cat /etc/selinux/config | grep 'SELINUX=disabled') ] ; then
 fi
 
 # Desabilita Programas inuteis no boot =====================================================================================================
-systemctl mask fedora-configure.service
-systemctl mask fedora-import-state.service
-systemctl mask fedora-loadmodules.service
-systemctl mask fedora-readonly.service
-systemctl mask fedora-storage-init-late.service
-systemctl mask fedora-storage-init.service
 systemctl mask dm-event.service
 systemctl mask dm-event.socket
 systemctl mask mdmonitor.service
@@ -67,6 +61,7 @@ dnf config-manager --add-repo=https://techmago.sytes.net/rpm/google-chrome.repo
 dnf config-manager --add-repo https://download.sublimetext.com/rpm/stable/x86_64/sublime-text.repo
 dnf config-manager --add-repo=http://negativo17.org/repos/fedora-negativo17.repo
 dnf config-manager --set-enabled remi
+dnf config-manager --disable fedora-bitcoin fedora-cdrtools fedora-flash-plugin fedora-games fedora-multimedia fedora-nvidia fedora-rar fedora-spotify fedora-steam fedora-uld
 
 dnf -y install --nogpgcheck ${repos}
 dnf -y update
@@ -76,7 +71,7 @@ dnf clean all
 dnf makecache
 
 # Remove porcarias: ========================================================================================================================
-dnf -y remove abrt dracut-config-rescue irqbalance mcelog open-vm-tools sendmail spice-vdagent iscsi-initiator-utils libvirt-client tigervl vinagre selinux-policy audit httpd tigervnc firstboot hexchat claws-mail exaile parole
+dnf -y remove abrt dracut-config-rescue irqbalance mcelog open-vm-tools sendmail spice-vdagent iscsi-initiator-utils libvirt-client tigervl vinagre selinux-policy audit httpd tigervnc firstboot hexchat claws-mail exaile parole orca
 
 # Reinstala o que nao devia ter saido
 dnf -y install dracut binutils dmidecode isomd5sum nfs-utils
@@ -88,7 +83,7 @@ if [ "${update_kernel}" = yes ]; then
 fi
 
 # Utilidades ===============================================================================================================================
-pacotes="${pacotes} zlib unrar bzip2 freetype-freeworld xz-lzma-compat xz lrzip p7zip p7zip-plugins lzip cabextract"
+pacotes="${pacotes} zlib unrar bzip2 freetype-freeworld xz-lzma-compat xz p7zip p7zip-plugins lzip cabextract"
 pacotes="${pacotes} htop iotop iftop pydf bmon pydf inxi nload"
 pacotes="${pacotes} ntpdate fortune-mod gnome-disk-utility terminator"
 pacotes="${pacotes} pigz pxz pbzip2"
@@ -117,17 +112,13 @@ pacotes="${pacotes} transmission filezilla"
 pacotes="${pacotes} flash-plugin firefox google-chrome-stable"
 pacotes="${pacotes} mirall pidgin youtube-dl purple-plugin_pack-pidgin"
 pacotes="${pacotes} thunderbird thunderbird-lightning"
-if [ "${devel}" = yes ]; then
-	pacotes="${pacotes} nmap-frontend wireshark-gnome"
-fi
-
 
 # Multimidia ===============================================================================================================================
 pacotes="${pacotes} mplayer smplayer"
 pacotes="${pacotes} gstreamer-plugins-bad gstreamer-plugins-ugly gstreamer-ffmpeg"
 pacotes="${pacotes} gstreamer1-plugins-ugly gstreamer1-libav"
 pacotes="${pacotes} rhythmbox pitivi cheese"
-pacotes="${pacotes} brasero skype"
+pacotes="${pacotes} brasero"
 
 # Jogos ====================================================================================================================================
 if [ "${jogos}" = yes ]; then
@@ -140,13 +131,13 @@ fi
 
 # Escritorio ===============================================================================================================================
 pacotes="${pacotes} calibre meld shutter"
-pacotes="${pacotes} gimp kolourpaint"
+pacotes="${pacotes} gimp kolourpaint geany"
 pacotes="${pacotes} texmaker texlive-scheme-small texlive-collection-langportuguese texlive-supertabular texlive-tocloft texlive-hyphenat texlive-moderncv"
-pacotes="${pacotes} geany-themes geany geany-plugins-addons geany-plugins-autoclose geany-plugins-codenav geany-plugins-debugger geany-plugins-defineformat geany-plugins-geanydoc geany-plugins-devhelp geany-plugins-geanyextrasel geany-plugins-geanygendoc geany-plugins-geanyinsertnum geany-plugins-geanylatex geany-plugins-geanylipsum geany-plugins-geanymacro geany-plugins-geanyminiscript geany-plugins-geanynumberedbookmarks geany-plugins-geanypg geany-plugins-geanyprj geany-plugins-geanypy geany-plugins-geanyvc geany-plugins-geniuspaste geany-plugins-gproject geany-plugins-markdown geany-plugins-multiterm geany-plugins-pairtaghighlighter geany-plugins-pohelper geany-plugins-pretty-printer geany-plugins-scope geany-plugins-shiftcolumn geany-plugins-spellcheck geany-plugins-tableconvert geany-plugins-treebrowser geany-plugins-webhelper geany-plugins-xmlsnippets"
 pacotes="${pacotes} libreoffice-langpack-pt-BR"
+pacotes="${pacotes} ubuntu-family-fonts ubuntu-title-fonts"
 
 # Devel e bibliotecas ======================================================================================================================
-pacotes="${pacotes} mesa-libGLU.i686 mesa-libGLU.x86_64 python-gpgme"
+pacotes="${pacotes} mesa-libGLU.i686 mesa-libGLU.x86_64"
 pacotes="${pacotes} libpng libpng.i686 cups-libs cups-libs.i686 nss-mdns nss-mdns.i686 lcms-libs lcms-libs.i686 lcms2.i686 lcms2"
 pacotes="${pacotes} kernel-tools kernel-tools-libs kernel-headers kernel-devel kernel-modules kernel-modules-extra"
 if [ "${devel}" = yes ]; then
@@ -160,8 +151,8 @@ if [ "${devel}" = yes ]; then
   pacotes="${pacotes} cmake-gui openssl-libs git-core readline readline-devel zlib-devel libyaml-devel"
   pacotes="${pacotes} libffi-devel libxslt-devel openssl openssl-devel"
   pacotes="${pacotes} bison-devel bison-devel.i686 flex-devel flex-devel.i686 glibc-devel glibc-devel.i686"
-  pacotes="${pacotes} python-pep8 pyflakes pygame PyOpenGL PyYAML"
-	pacotes="${pacotes} docker-ce rsyslog hub"
+  pacotes="${pacotes} python-pep8 pyflakes pygame PyYAML"
+  pacotes="${pacotes} docker-ce rsyslog hub"
 fi
 
 dnf -y --skip-broken --allowerasing install ${pacotes}
@@ -192,10 +183,23 @@ echo '<?xml version="1.0"?>
   </match>
 </fontconfig>' > /etc/fonts/local.conf
 
+# Nemo =====================================================================================================================================
+dnf install -y nextcloud-client-nemo nemo-extensions  nemo-dropbox
+
+echo '[Desktop Entry]
+Type=Application
+Name=Nemo
+Comment=Start Nemo desktop at log in
+Exec=nemo-desktop
+OnlyShowIn=GNOME;
+AutostartCondition=GSettings org.nemo.desktop show-desktop-icons
+X-GNOME-AutoRestart=true
+NoDisplay=true' > /etc/xdg/autostart/nemo-autostart-with-gnome.desktop
+
 # Ftpython =================================================================================================================================
-wget --no-check-certificate http://techmago.sytes.net/rpm/ftpython
+wget --no-check-certificate https://techmago.sytes.net/rpm/ftpython
 chmod +x ftpython
-mv ftpyhon /usr/local/bin
+mv ftpython /usr/local/bin
 
 # Atom =====================================================================================================================================
 wget https://atom.io/download/rpm -O atom.rpm
@@ -203,32 +207,24 @@ dnf -y install atom.rpm
 rm -f atom.rpm
 
 #instala meu pacote de fontes ==============================================================================================================
-wget --no-check-certificate http://techmago.sytes.net/rpm/fontesWindows.tar.bz2
-tar -xjf fontesWindows.tar.bz2
+wget --no-check-certificate https://techmago.sytes.net/rpm/fontesWindows.txz
+tar -xJf fontesWindows.txz
 mv fontesWindows /usr/share/fonts/
-rm -f fontesWindows.tar.bz2
+rm -f fontesWindows.txz
 
 # Virtual Box ==============================================================================================================================
 if [ "${devel}" = yes ]; then
 	dnf -y install VirtualBox kmod-VirtualBox
 fi
 
+# Da um boost no terminal ==================================================================================================================
+wget --no-check-certificate http://techmago.sytes.net/rpm/techmago.sh
+mv techmago.sh /etc/profile.d/
+
 # Instala o pacote de linguas ==============================================================================================================
 if [ "${kde}" = yes ]; then
 	dnf -y install kde-i18n-Brazil kde-l10n-Brazil
 fi
-
-# Instalar java ============================================================================================================================
-wget --no-check-certificate http://techmago.sytes.net/rpm/jre.rpm
-dnf -y install --nogpgcheck jre.rpm
-rm -f jre.rpm
-
-cd /usr/bin/
-rm -rf java javac javadoc jar
-ln -s /usr/java/latest/bin/java
-ln -s /usr/java/latest/bin/javac
-ln -s /usr/java/latest/bin/javadoc
-ln -s /usr/java/latest/bin/jar
 
 # ACABOU ===================================================================================================================================
 echo "All done. Now reboot"
@@ -237,3 +233,5 @@ echo "reboot"
 echo "rhythmbox fix:"
 echo "wget https://github.com/mendhak/rhythmbox-tray-icon/raw/master/rhythmbox-tray-icon.zip"
 echo "unzip -u rhythmbox-tray-icon.zip -d ~/.local/share/rhythmbox/plugins"
+echo "Nemo stuff:"
+echo "gsettings set org.nemo.desktop use-desktop-grid false
