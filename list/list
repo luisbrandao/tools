@@ -20,7 +20,7 @@ TABLE_HEADER = [
 
 @click.command()
 @click.option('--column', '-c', multiple=True, type=str, help='Filter the columns. Specify multiple times to show multiple columns. Ex: list -c "Name" -c "Private IP"')
-@click.option('--region', '-r', default='sa-east-1', type=str, help='Default: sa-east-1. Select the region for the query. Ex: list -r us-east-1')
+@click.option('--region', '-r', type=str, help='Default: sa-east-1. Select the region for the query. Ex: list -r us-east-1')
 @click.option('--use-table', default=True, type=bool, help='Default: True. Change the output from plain text to table.')
 def main(column, region, use_table):
     if not column:
