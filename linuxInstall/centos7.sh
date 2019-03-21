@@ -16,7 +16,7 @@ if [ -f $(cat /etc/selinux/config | grep 'SELINUX=disabled') ] ; then
 fi
 
 # Checa Yum =================================================================================================================
-if [ -f $(cat /etc/yum.conf | grep clean_requirements_on_remove) ] ; then
+if [ -f $(cat /etc/yum.conf | grep clean_requirements_on_remove) ] ; then\
         echo "Configurando yum"
         echo "clean_requirements_on_remove=1" >> /etc/yum.conf
 fi
@@ -92,7 +92,7 @@ yum install -y mesa-dri-drivers.i686 mesa-dri-drivers.x86_64 mesa-filesystem.i68
 yum install -y mesa-libEGL-devel.i686 mesa-libEGL-devel.x86_64 mesa-libGL.i686 mesa-libGL.x86_64 mesa-libGL-devel.i686 mesa-libGL-devel.x86_64
 yum install -y mesa-libGLES.i686 mesa-libGLES.x86_64 mesa-libGLES-devel.i686 mesa-libGLES-devel.x86_64 mesa-libGLU.i686 mesa-libGLU.x86_64 mesa-libGLU-devel.i68
 yum install -y mesa-libGLU-devel.x86_64 mesa-libGLw-devel.i686 mesa-libGLw-devel.x86_64 mesa-libOSMesa.i686 mesa-libOSMesa.x86_64
-yum install -y mesa-libOSMesa-devel.i686 mesa-libOSMesa-devel.x86_64 mesa-libgbm.i686 mesa-libgbm.x86_64 mesa-libgbm-devel.i686
+yum install -y mesa-libOSMesa-devel.i686 mesa-libOS Mesa-devel.x86_64 mesa-libgbm.i686 mesa-libgbm.x86_64 mesa-libgbm-devel.i686
 yum install -y mesa-libgbm-devel.x86_64 mesa-libglapi.i686 mesa-libglapi.x86_64mesa-libGLw.x86_64 mesa-libGLw.i686
 yum install -y libdc1394-devel libmodplug-devel libv4l-devel libva-devel openal-soft-devel openjpeg-devel opus-devel schroedinger-devel
 yum install -y soxr-devel texinfo x265-devel ilbc-devel SDL-devel a52dec-devel aalib-devel bzip2-devel alsa-lib-devel enca-devel faad2-devel
