@@ -40,7 +40,7 @@ yum-config-manager --disable epel-bitcoin epel-cdrtools epel-games epel-multimed
 
 if ${local} ; then
 	yum-config-manager --add-repo=https://techmago.sytes.net/rpm/techmago-centos.repo
-	yum-config-manager --disable base updates extras centosplus epel
+	yum-config-manager --disable base updates extras centosplus epel nux-desktop
 else
 	yum-config-manager --disable extras
 fi
