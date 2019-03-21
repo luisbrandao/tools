@@ -102,7 +102,7 @@ yum install -y libdv-devel libdvdnav-devel libmpeg2-devel libmpg123-devel librtm
 yum install -y lirc-devel lzo-devel pulseaudio-libs-devel speex-devel twolame-devel x264-devel xvidcore-devel yasm dbus-glib-devel
 yum install -y gtk3-devel libcurl-devel libgda-devel libgpod-devel libmusicbrainz3-devel libnotify-devel nautilus-devel nemo-devel
 yum install -y qt5-linguist qt5-qtbase-devel qt5-qtscript-devel qt5-qttools-devel qt5-qtwebkit-devel qtsingleapplication-qt5-devel
-yum install -y dirac-devel texi2html
+yum install -y dirac-devel
 
 # Atom ======================================================================================================================
 wget https://atom.io/download/rpm -O atom.rpm
