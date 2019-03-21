@@ -3,6 +3,7 @@
 # ------------------------------------------------------[ Configuração ]-----------------------------------------------------
 repos=""                                                               # Inicia a variável
 pacotes=""                                                             # Inicia a variável
+local="true"                                                            # Inicia a variável
 # ------------------------------------------------------[ Configuração ]-----------------------------------------------------
 # ---------------------------------------------------------------------------------------------------------------------------
 # Checa SELINUX =============================================================================================================
@@ -33,10 +34,16 @@ yum -y install --nogpgcheck ${repos} yum-utils
 
 yum-config-manager --add-repo=http://negativo17.org/repos/epel-negativo17.repo
 yum-config-manager --add-repo=https://techmago.sytes.net/rpm/google-chrome.repo
-yum-config-manager --add-repo=https://techmago.sytes.net/rpm/techmago-centos.repo
 
-yum-config-manager --enable remi centosplus
+yum-config-manager --enable remi
 yum-config-manager --disable epel-bitcoin epel-cdrtools epel-games epel-multimedia epel-nvidia epel-rar epel-spotify epel-steam epel-uld
+
+if ${local} ; then
+	yum-config-manager --add-repo=https://techmago.sytes.net/rpm/techmago-centos.repo
+	yum-config-manager --disable base updates extras centosplus epel
+else
+	yum-config-manager --disable extras
+fi
 
 # Desabilita serviços desnecessários ========================================================================================
 systemctl stop auditd.service

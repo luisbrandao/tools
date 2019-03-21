@@ -29,6 +29,7 @@ systemctl mask mdmonitor-takeover.service
 systemctl mask firewalld.service
 systemctl mask pcscd.service
 systemctl mask ModemManager.service
+systemctl disable bolt.service
 
 # Preparação do dnf ========================================================================================================================
 if [ -f $(cat /etc/dnf/dnf.conf | grep clean_requirements_on_remove) ] ; then
