@@ -77,6 +77,7 @@ yum install -y libdvdcss gstreamer{,1}-plugins-ugly gstreamer-plugins-bad-nonfre
 # Escritorio
 yum install -y gnome-disk-utility terminator freetype-freeworld
 yum install -y vim flash-plugin google-chrome-stable gparted
+yum install -t meld
 
 # Internet
 yum install -y wget curl telnet
