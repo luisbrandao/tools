@@ -3,7 +3,7 @@ Name: list
 Version: 1.0.1
 Release: 1%{?dist}
 License: GPLv2
-Group: System Environment/Daemons
+Group: Applications/Tools
 Source0: %{name}-%{version}.tar.bz2
 BuildArch: noarch
 
