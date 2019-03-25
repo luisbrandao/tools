@@ -46,12 +46,17 @@ else
 fi
 
 # Desabilita serviços desnecessários ========================================================================================
+# systemctl disable wpa_supplicant.service # Notebook?
 systemctl stop auditd.service
-systemctl disable auditd.service
 systemctl mask auditd.service
 systemctl stop ModemManager.service
-systemctl disable ModemManager.service
 systemctl mask ModemManager.service
+systemctl disable firewalld.service
+systemctl disable ipmievd.service
+systemctl disable lvm2-lvmetad.socket
+systemctl disable lvm2-lvmpolld.socket
+systemctl disable cryptsetup.target
+
 
 # Da um boost no terminal ===================================================================================================
 wget --no-check-certificate http://techmago.sytes.net/rpm/techmago.sh
