@@ -29,6 +29,8 @@ repos=""
 repos="${repos} https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm"
 repos="${repos} http://rpms.remirepo.net/enterprise/remi-release-7.rpm"
 repos="${repos} http://li.nux.ro/download/nux/dextop/el7/x86_64/nux-dextop-release-0-5.el7.nux.noarch.rpm"
+repos="${repos} https://mirror.yandex.ru/fedora/russianfedora/russianfedora/free/el/releases/7/Everything/x86_64/os/russianfedora-free-release-7-1.R.noarch.rpm"
+repos="${repos} https://mirror.yandex.ru/fedora/russianfedora/russianfedora/nonfree/el/releases/7/Everything/x86_64/os/russianfedora-nonfree-release-7-1.R.noarch.rpm"
 
 yum -y install --nogpgcheck ${repos} yum-utils
 
