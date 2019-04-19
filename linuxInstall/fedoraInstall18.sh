@@ -25,7 +25,7 @@ if [ -f $(cat /etc/yum.conf | grep clean_requirements_on_remove) ] ; then
 	echo "clean_requirements_on_remove=1" >> /etc/yum.conf
 fi
 
-#instalação dos repositorios: 
+#instalação dos repositorios:
 yum -y localinstall --nogpgcheck http://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-18.noarch.rpm
 yum -y localinstall --nogpgcheck http://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-18.noarch.rpm
 yum -y localinstall --nogpgcheck http://linuxdownload.adobe.com/adobe-release/adobe-release-x86_64-1.0-1.noarch.rpm
@@ -60,7 +60,7 @@ yum install -y nmap-frontend wireshark-gnome
 
 # Multimidia
 yum install -y mplayer2 smplayer mate-mplayer
-yum install -y gstreamer-plugins-bad gstreamer-plugins-ugly gstreamer-ffmpeg	
+yum install -y gstreamer-plugins-bad gstreamer-plugins-ugly gstreamer-ffmpeg
 yum install -y gstreamer1-plugins-bad-freeworld gstreamer1-plugins-ugly gstreamer1-libav
 yum install -y rhythmbox pitivi cheese
 
@@ -69,7 +69,7 @@ yum install -y calibre
 yum install -y gimp
 yum install -y texmaker texlive-collection-langportuguese texlive-supertabular texlive-tocloft texlive-hyphenat texlive-moderncv
 yum install -y geany-themes
-yum install -y mate-document-viewer 
+yum install -y mate-document-viewer
 
 # Devel
 yum install -y gcc gcc-c++ fpc curl make patch
@@ -95,7 +95,7 @@ alternatives --install /usr/bin/java java /usr/java/latest/bin/java 20000
 alternatives --install /usr/bin/javaws javaws /usr/java/latest/bin/javaws 20000
 alternatives --install /usr/lib64/mozilla/plugins/libjavaplugin.so libjavaplugin.so.x86_64 /usr/java/latest/lib/amd64/libnpjp2.so 20000
 
-# Instalar crossover	
+# Instalar crossover
 wget --no-check-certificate http://techmago.sytes.net/rpm/crossover-11.3.1-1.i386.rpm
 yum -y localinstall --nogpgcheck crossover-11.3.1-1.i386.rpm
 rm -f crossover-11.3.1-1.i386.rpm
@@ -125,13 +125,12 @@ echo '<?xml version="1.0"?>
   </match>
 </fontconfig>' > /etc/fonts/local.conf
 
-#instala meu pacote de fontes
-wget --no-check-certificate http://techmago.sytes.net/rpm/fontesWindows.tar.bz2
-tar -xjf fontesWindows.tar.bz2
+# Instala um pacote de senhas do windows ====================================================================================
+wget --no-check-certificate http://techmago.sytes.net/rpm/fontesWindows.txz
+tar -xJf fontesWindows.txz
 mv fontesWindows /usr/share/fonts/
-rm -f fontesWindows.tar.bz2
+rm -f fontesWindows.txz
 
 # ACABOU
 echo "All done. Now reboot"
 echo "reboot"
-

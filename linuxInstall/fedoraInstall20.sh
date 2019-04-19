@@ -167,11 +167,11 @@ echo '<?xml version="1.0"?>
   </match>
 </fontconfig>' > /etc/fonts/local.conf
 
-#instala meu pacote de fontes ===================================================================================================
-wget --no-check-certificate http://techmago.sytes.net/rpm/fontesWindows.tar.bz2
-tar -xjf fontesWindows.tar.bz2
+# Instala um pacote de senhas do windows ====================================================================================
+wget --no-check-certificate http://techmago.sytes.net/rpm/fontesWindows.txz
+tar -xJf fontesWindows.txz
 mv fontesWindows /usr/share/fonts/
-rm -f fontesWindows.tar.bz2
+rm -f fontesWindows.txz
 
 # Virtual Box ===================================================================================================
 if [ "${devel}" = yes ]; then
@@ -201,4 +201,3 @@ fi
 # ACABOU =====================================================================================================
 echo "All done. Now reboot"
 echo "reboot"
-

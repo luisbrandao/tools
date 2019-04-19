@@ -181,11 +181,11 @@ wget https://atom.io/download/rpm -O atom.rpm
 dnf -y install atom.rpm
 rm -f atom.rpm
 
-#instala meu pacote de fontes ==============================================================================================================
-wget --no-check-certificate http://techmago.sytes.net/rpm/fontesWindows.tar.bz2
-tar -xjf fontesWindows.tar.bz2
+# Instala um pacote de senhas do windows ====================================================================================
+wget --no-check-certificate http://techmago.sytes.net/rpm/fontesWindows.txz
+tar -xJf fontesWindows.txz
 mv fontesWindows /usr/share/fonts/
-rm -f fontesWindows.tar.bz2
+rm -f fontesWindows.txz
 
 # Virtual Box ==============================================================================================================================
 if [ "${devel}" = yes ]; then
@@ -233,4 +233,3 @@ echo "reboot"
 echo "rhythmbox fix:"
 echo "wget https://github.com/mendhak/rhythmbox-tray-icon/raw/master/rhythmbox-tray-icon.zip"
 echo "unzip -u rhythmbox-tray-icon.zip -d ~/.local/share/rhythmbox/plugins"
-

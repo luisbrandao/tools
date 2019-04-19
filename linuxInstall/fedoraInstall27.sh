@@ -202,11 +202,11 @@ wget https://atom.io/download/rpm -O atom.rpm
 dnf -y install atom.rpm
 rm -f atom.rpm
 
-#instala meu pacote de fontes ==============================================================================================================
-wget --no-check-certificate http://techmago.sytes.net/rpm/fontesWindows.tar.bz2
-tar -xjf fontesWindows.tar.bz2
+# Instala um pacote de senhas do windows ====================================================================================
+wget --no-check-certificate http://techmago.sytes.net/rpm/fontesWindows.txz
+tar -xJf fontesWindows.txz
 mv fontesWindows /usr/share/fonts/
-rm -f fontesWindows.tar.bz2
+rm -f fontesWindows.txz
 
 # Virtual Box ==============================================================================================================================
 if [ "${devel}" = yes ]; then
