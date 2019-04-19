@@ -120,11 +120,7 @@ rm -f atom.rpm
 
 # Instala um pacote de senhas do windows ====================================================================================
 wget --no-check-certificate http://techmago.sytes.net/rpm/fontesWindows.txz
-<<<<<<< HEAD
 tar -xJf fontesWindows.txz
-=======
-tar -xJf fontesWindows.tar.bz2
->>>>>>> 6f993d20a409cd9880ebded31ea8222b9a4b00e6
 mv fontesWindows /usr/share/fonts/
 rm -f fontesWindows.txz
 
