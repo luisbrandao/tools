@@ -119,10 +119,10 @@ yum -y install atom.rpm
 rm -f atom.rpm
 
 # Instala um pacote de senhas do windows ====================================================================================
-wget --no-check-certificate http://techmago.sytes.net/rpm/fontesWindows.tar.bz2
-tar -xjf fontesWindows.tar.bz2
+wget --no-check-certificate http://techmago.sytes.net/rpm/fontesWindows.txz
+tar -xJf fontesWindows.txz
 mv fontesWindows /usr/share/fonts/
-rm -f fontesWindows.tar.bz2
+rm -f fontesWindows.txz
 
 # Fluendo mp3 codecs ========================================================================================================
 wget --no-check-certificate http://techmago.sytes.net/rpm/fluendo-codecs-mp3-17-3.i386.rpm
