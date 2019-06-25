@@ -8,7 +8,6 @@ from boto.route53.exception import DNSServerError
 from boto.route53.record import ResourceRecordSets
 import logging
 import click
-import urllib2
 
 logger = logging.getLogger(__name__)
 handler = logging.StreamHandler(sys.stdout)
@@ -29,25 +28,16 @@ def resolve_name_ip(name):
     answer = resolver.query(name)
     return answer.response.answer[0].items[0].address
 
-def internet_on():
-    try:
-        urllib2.urlopen('http://200.236.31.217', timeout=5)
-        return True
-    except:
-        return False
-
 @click.command()
 @click.option('--hosted-zone', '-z', 'HOSTED_ZONE', type=str, required=True, help='Select AWS hosted zone id')
 @click.option('--domain-name', '-n', 'DOMAIN_NAME', type=str, required=True, help='Select the domain to be updated')
 def main(HOSTED_ZONE, DOMAIN_NAME):
-    # Test if internet is reachable
-    if not internet_on():
+    # Get your ip using a public service
+    try:
+        current_ip = get('https://ident.me').text
+    except:
         logger.error('Internet is down')
         sys.exit(1)
-
-
-    # Get your ip using a public service
-    current_ip = get('https://ident.me').text
 
     # Avoid to hit the Route53 API if is not necessary.
     # so compare first to a DNS server if the IP changed
