@@ -8,6 +8,7 @@ from boto.route53.exception import DNSServerError
 from boto.route53.record import ResourceRecordSets
 import logging
 import click
+import urllib2
 
 logger = logging.getLogger(__name__)
 handler = logging.StreamHandler(sys.stdout)
@@ -30,9 +31,9 @@ def resolve_name_ip(name):
 
 def internet_on():
     try:
-        urllib2.urlopen('http://200.236.31.217', timeout=1)
+        urllib2.urlopen('http://200.236.31.217', timeout=5)
         return True
-    except urllib2.URLError as err:
+    except:
         return False
 
 @click.command()
