@@ -35,6 +35,7 @@ def main(HOSTED_ZONE, DOMAIN_NAME):
     # Get your ip using a public service
     try:
         current_ip = get('https://ident.me').text
+        # current_ip = get('https://checkip.amazonaws.com').text Another option
     except:
         logger.error('Internet is down')
         sys.exit(1)
