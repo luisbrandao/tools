@@ -13,6 +13,7 @@ Requires: bash-completion
 
 # No debug info for bare scripts, right?
 %define debug_package %{nil}
+%define _build_id_links none
 
 # http://fedoraproject.org/wiki/Changes/UnversionedDocdirs
 %{!?_pkgdocdir: %global _pkgdocdir %{_docdir}/%{name}-%{version}}
