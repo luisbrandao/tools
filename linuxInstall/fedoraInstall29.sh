@@ -207,6 +207,13 @@ wget https://atom.io/download/rpm -O atom.rpm
 dnf -y install atom.rpm
 rm -f atom.rpm
 
+# Hack para deletar arquivos
+echo '#!/usr/bin/env bash
+# GVFS updated and dropped gvfs-trash to gio, but Atom didnt update.
+# https://github.com/atom/tree-view/issues/1237
+/usr/bin/gio trash "$@"
+' | tee /usr/local/bin/gvfs-trash && chmod +x /usr/local/bin/gvfs-trash
+
 # Instala um pacote de senhas do windows ====================================================================================
 wget --no-check-certificate http://techmago.sytes.net/rpm/fontesWindows.txz
 tar -xJf fontesWindows.txz
