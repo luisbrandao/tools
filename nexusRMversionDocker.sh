@@ -18,13 +18,13 @@ fi
 # parse the arguments
 group=${1} ; shift
 while [[ $# -gt 0 ]] ; do
-  versions[${i}]=${1}
-  i=$((i+1))
+  versions[${i}]="${1}"
+  i="$((i+1))"
   shift
 done
 
 # Prompt user
-for version in ${versions[*]} ; do
+for version in "${versions[*]}" ; do
   for URL in $(curl -X GET "${url_base}/search?format=docker&name=${group}&version=${version}" -s | jq -r '.items[].assets[].downloadUrl') ; do
   	echo ${URL}
   done
@@ -36,7 +36,7 @@ if [[ $REPLY =~ ^[Yy]$ ]] ; then
   echo ==========================
   echo ======= Apagando =========
   echo ==========================
-  for version in ${versions[*]} ; do
+  for version in "${versions[*]}" ; do
     for HASH in $(curl -X GET "${url_base}/search?format=docker&name=${group}&version=${version}" -s | jq -r '.items[].assets[].checksum.sha256') ; do
       URL="${api_url}/${group}/manifests/sha256:${HASH}"
       echo ${URL}
