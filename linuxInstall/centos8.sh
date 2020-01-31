@@ -88,7 +88,7 @@ pacotes="${pacotes} brasero gnome-tweak-tool gnome-terminal-nautilus gnome-games
 
 # Desenvolvimento
 pacotes="${pacotes} gtk2-immodules"
-pacotes="${pacotes} acpid"
+pacotes="${pacotes} acpid elfutils-libelf-devel"
 pacotes="${pacotes} mesa-dri-drivers.i686 mesa-dri-drivers.x86_64 mesa-filesystem.i686 mesa-filesystem.x86_64 mesa-libEGL.i686 mesa-libEGL.x86_64"
 pacotes="${pacotes} mesa-libEGL-devel.i686 mesa-libEGL-devel.x86_64 mesa-libGL.i686 mesa-libGL.x86_64 mesa-libGL-devel.i686 mesa-libGL-devel.x86_64"
 pacotes="${pacotes} mesa-libGLES.i686 mesa-libGLES.x86_64 mesa-libGLES-devel.i686 mesa-libGLES-devel.x86_64 mesa-libGLU.i686 mesa-libGLU.x86_64 mesa-libGLU-devel.i686"
