@@ -9,7 +9,7 @@ i=0
 # ------------------------------------------------------------------------------
 
 # Check minimum arguments
-if [ "$#" -le 2 ]; then
+if [ "$#" -le 1 ]; then
     echo 'I need at least 2 arguments!'
     echo 'example: bash nexusRMversionDocker.sh acc-backend black* blue-37 purple-11*'
     exit 1
