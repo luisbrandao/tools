@@ -97,7 +97,7 @@ fi
 # Internet =================================================================================================================================
 pacotes="${pacotes} transmission filezilla"
 pacotes="${pacotes} flash-plugin firefox google-chrome-stable"
-pacotes="${pacotes} mirall pidgin youtube-dl purple-plugin_pack-pidgin"
+pacotes="${pacotes} youtube-dl purple-plugin_pack-pidgin"
 pacotes="${pacotes} thunderbird thunderbird-lightning"
 
 # Multimidia ===============================================================================================================================

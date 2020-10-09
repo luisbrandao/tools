@@ -34,11 +34,17 @@ dnf -y install --nogpgcheck ${repos} dnf-utils
 
 dnf config-manager --add-repo https://brave-browser-rpm-release.s3.brave.com/x86_64/
 dnf config-manager --add-repo https://negativo17.org/repos/epel-spotify.repo
+dnf config-manager --add-repo https://negativo17.org/repos/epel-steam.repo
 dnf config-manager --add-repo https://techmago.sytes.net/rpm/centos8-techsytes.repo
 
 rpm --import https://brave-browser-rpm-release.s3.brave.com/brave-core.asc
 
-dnf config-manager --enable PowerTools
+dnf config-manager --disable AppStream
+dnf config-manager --disable BaseOS
+dnf config-manager --disable PowerTools
+dnf config-manager --disable fasttrack
+dnf config-manager --disable extras
+dnf config-manager --disable epel
 
 # Desabilita serviços desnecessários ========================================================================================
 # systemctl disable wpa_supplicant.service # Notebook?
@@ -65,45 +71,53 @@ dnf update -y --skip-broken
 
 # Instala pacotes ===========================================================================================================
 # Sistema
-pacotes="${pacotes} pigz pxz pbzip2 zlib unrar bzip2 xz-lzma-compat xz lrzip p7zip p7zip-plugins lzip cabextract"
-pacotes="${pacotes} htop iotop iftop bmon pydf inxi nload ntpdate fortune-mod bash-completion"
-pacotes="${pacotes} net-tools byobu mlocate psmisc hddtemp lm_sensors"
+dnf install -y pigz pxz pbzip2 zlib unrar bzip2 xz-lzma-compat xz lrzip p7zip p7zip-plugins lzip cabextract
+dnf install -y htop iotop iftop bmon pydf inxi nload ntpdate fortune-mod bash-completion
+dnf install -y net-tools byobu mlocate psmisc hddtemp lm_sensors glances
 
 # Media
-#dnf install -y spotify-client
-pacotes="${pacotes} vlc smplayer"
-pacotes="${pacotes} gstreamer1-plugins-ugly gstreamer1-libav ffmpeg HandBrake-{gui,cli} gstreamer1-plugins-bad-freeworld"
+dnf install -y spotify-client
+dnf install -y vlc smplayer
+dnf install -y gstreamer1-plugins-ugly gstreamer1-libav ffmpeg HandBrake-{gui,cli} gstreamer1-plugins-bad-freeworld
 
 # Escritorio
-pacotes="${pacotes} gnome-disk-utility terminator freetype-freeworld"
-pacotes="${pacotes} vim flash-plugin google-chrome-stable gparted"
-pacotes="${pacotes} meld"
+#dnf install -y texmaker texlive-scheme-small texlive-collection-langportuguese texlive-supertabular texlive-tocloft texlive-hyphenat texlive-moderncv
+dnf install -y terminator freetype-freeworld gparted
+dnf install -y meld nextcloud-client-nautilus nextcloud-client
+dnf install -y gimp kolourpaint geany
 
 # Internet
-pacotes="${pacotes} wget curl telnet brave-browser google-chrome-stable thunderbird"
+dnf install -y wget curl telnet brave-browser google-chrome-stable thunderbird
+dnf install -y filezilla youtubedl
+dnf install -y vim flash-plugin google-chrome-stable
+dnf install -y remmina remmina-plugins-nx remmina-gnome-session remmina-plugins-rdp remmina-plugins-vnc remmina-plugins-www remmina-plugins-spice remmina-plugins-xdmcp remmina-plugins-kwallet remmina-plugins-st remmina-plugins-secret remmina-plugins-exec
+
+if [ "${steam}" = yes ]; then
+	pacotes="${pacotes} steam"
+fi
 
 # Gnome
-pacotes="${pacotes} gnome-tweaks"
-pacotes="${pacotes} brasero gnome-tweak-tool gnome-terminal-nautilus gnome-games gnome-games-extra gnome-icon-theme gnome-icon-theme-extras gnome-system-monitor"
+dnf install -y gnome-tweaks gnome-disk-utility
+dnf install -y brasero gnome-tweak-tool gnome-terminal-nautilus gnome-games gnome-games-extra gnome-icon-theme gnome-icon-theme-extras gnome-system-monitor
 
 # Desenvolvimento
-pacotes="${pacotes} gtk2-immodules"
-pacotes="${pacotes} acpid elfutils-libelf-devel"
-pacotes="${pacotes} mesa-dri-drivers.i686 mesa-dri-drivers.x86_64 mesa-filesystem.i686 mesa-filesystem.x86_64 mesa-libEGL.i686 mesa-libEGL.x86_64"
-pacotes="${pacotes} mesa-libEGL-devel.i686 mesa-libEGL-devel.x86_64 mesa-libGL.i686 mesa-libGL.x86_64 mesa-libGL-devel.i686 mesa-libGL-devel.x86_64"
-pacotes="${pacotes} mesa-libGLES.i686 mesa-libGLES.x86_64 mesa-libGLES-devel.i686 mesa-libGLES-devel.x86_64 mesa-libGLU.i686 mesa-libGLU.x86_64 mesa-libGLU-devel.i686"
-pacotes="${pacotes} mesa-libGLU-devel.x86_64 mesa-libGLw-devel.i686 mesa-libGLw-devel.x86_64 mesa-libOSMesa.i686 mesa-libOSMesa.x86_64"
-pacotes="${pacotes} mesa-libOSMesa-devel.i686 mesa-libOS Mesa-devel.x86_64 mesa-libgbm.i686 mesa-libgbm.x86_64 mesa-libgbm-devel.i686"
-pacotes="${pacotes} mesa-libgbm-devel.x86_64 mesa-libglapi.i686 mesa-libglapi.x86_64 mesa-libGLw.x86_64 mesa-libGLw.i686"
-pacotes="${pacotes} libdc1394-devel libmodplug-devel libv4l-devel libva-devel openal-soft-devel openjpeg-devel opus-devel schroedinger-devel"
-pacotes="${pacotes} soxr-devel texinfo x265-devel ilbc-devel SDL-devel a52dec-devel aalib-devel bzip2-devel alsa-lib-devel enca-devel faad2-devel"
-pacotes="${pacotes} ffmpeg-devel fribidi-devel giflib-devel gsm-devel gtk2-devel ladspa-devel lame-devel libXinerama-devel libXScrnSaver-devel"
-pacotes="${pacotes} libXv-devel libXvMC-devel libass-devel libbluray-devel libbs2b-devel libcaca-devel libcdio-paranoia-devel libdca-devel"
-pacotes="${pacotes} libdv-devel libdvdnav-devel libmpeg2-devel libmpg123-devel librtmp-devel libtheora-devel libvdpau-devel libvorbis-devel"
-pacotes="${pacotes} lirc-devel lzo-devel pulseaudio-libs-devel speex-devel twolame-devel x264-devel xvidcore-devel yasm dbus-glib-devel"
-pacotes="${pacotes} gtk3-devel libcurl-devel libgda-devel libgpod-devel libmusicbrainz3-devel libnotify-devel nautilus-devel nemo-devel"
-pacotes="${pacotes} qt5-linguist qt5-qtbase-devel qt5-qtscript-devel qt5-qttools-devel qt5-qtwebkit-devel qtsingleapplication-qt5-devel"
-pacotes="${pacotes} dirac-devel"
+dnf install -y gtk2-immodules
+dnf install -y acpid elfutils-libelf-devel
+dnf install -y mesa-dri-drivers.i686 mesa-dri-drivers.x86_64 mesa-filesystem.i686 mesa-filesystem.x86_64 mesa-libEGL.i686 mesa-libEGL.x86_64
+dnf install -y mesa-libEGL-devel.i686 mesa-libEGL-devel.x86_64 mesa-libGL.i686 mesa-libGL.x86_64 mesa-libGL-devel.i686 mesa-libGL-devel.x86_64
+dnf install -y mesa-libGLES.i686 mesa-libGLES.x86_64 mesa-libGLES-devel.i686 mesa-libGLES-devel.x86_64 mesa-libGLU.i686 mesa-libGLU.x86_64 mesa-libGLU-devel.i686
+dnf install -y mesa-libGLU-devel.x86_64 mesa-libGLw-devel.i686 mesa-libGLw-devel.x86_64 mesa-libOSMesa.i686 mesa-libOSMesa.x86_64
+dnf install -y mesa-libOSMesa-devel.i686 mesa-libOS Mesa-devel.x86_64 mesa-libgbm.i686 mesa-libgbm.x86_64 mesa-libgbm-devel.i686
+dnf install -y mesa-libgbm-devel.x86_64 mesa-libglapi.i686 mesa-libglapi.x86_64 mesa-libGLw.x86_64 mesa-libGLw.i686
+dnf install -y libdc1394-devel libmodplug-devel libv4l-devel libva-devel openal-soft-devel openjpeg-devel opus-devel schroedinger-devel
+dnf install -y soxr-devel texinfo x265-devel ilbc-devel SDL-devel a52dec-devel aalib-devel bzip2-devel alsa-lib-devel enca-devel faad2-devel
+dnf install -y ffmpeg-devel fribidi-devel giflib-devel gsm-devel gtk2-devel ladspa-devel lame-devel libXinerama-devel libXScrnSaver-devel
+dnf install -y libXv-devel libXvMC-devel libass-devel libbluray-devel libbs2b-devel libcaca-devel libcdio-paranoia-devel libdca-devel
+dnf install -y libdv-devel libdvdnav-devel libmpeg2-devel libmpg123-devel librtmp-devel libtheora-devel libvdpau-devel libvorbis-devel
+dnf install -y lirc-devel lzo-devel pulseaudio-libs-devel speex-devel twolame-devel x264-devel xvidcore-devel yasm dbus-glib-devel
+dnf install -y gtk3-devel libcurl-devel libgda-devel libgpod-devel libmusicbrainz3-devel libnotify-devel nautilus-devel nemo-devel
+dnf install -y qt5-linguist qt5-qtbase-devel qt5-qtscript-devel qt5-qttools-devel qt5-qtwebkit-devel qtsingleapplication-qt5-devel
+dnf install -y dirac-devel
 
 yum install -y --skip-broken ${pacotes}
 
