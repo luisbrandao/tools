@@ -3,7 +3,10 @@
 # ------------------------------------------------------[ Configuração ]-----------------------------------------------------
 repos=""                                                               # Inicia a variável
 pacotes=""                                                             # Inicia a variável
-local="true"                                                            # Inicia a variável
+local="true"                                                           # Inicia a variável
+devel="yes"                                                            # Instala coisas do pseudogrupo "devel"
+jogos="yes"                                                            # Instala os jogos básicos
+steam="yes"                                                            # Instala a steam
 # ------------------------------------------------------[ Configuração ]-----------------------------------------------------
 # ---------------------------------------------------------------------------------------------------------------------------
 # Checa SELINUX =============================================================================================================
@@ -29,22 +32,23 @@ repos="epel-release"
 repos="${repos} https://download1.rpmfusion.org/free/el/rpmfusion-free-release-8.noarch.rpm"
 repos="${repos} https://download1.rpmfusion.org/nonfree/el/rpmfusion-nonfree-release-8.noarch.rpm"
 repos="${repos} https://extras.getpagespeed.com/release-el8-latest.rpm"
+repos="${repos} http://linuxdownload.adobe.com/adobe-release/adobe-release-x86_64-1.0-1.noarch.rpm"
 
 dnf -y install --nogpgcheck ${repos} dnf-utils
+
+if ${local} ; then
+	dnf config-manager --disable AppStream BaseOS PowerTools fasttrack extras epel
+	dnf config-manager --add-repo https://techmago.sytes.net/rpm/centos8-techsytes.repo
+else
+	dnf config-manager --disable extras
+fi
 
 dnf config-manager --add-repo https://brave-browser-rpm-release.s3.brave.com/x86_64/
 dnf config-manager --add-repo https://negativo17.org/repos/epel-spotify.repo
 dnf config-manager --add-repo https://negativo17.org/repos/epel-steam.repo
-dnf config-manager --add-repo https://techmago.sytes.net/rpm/centos8-techsytes.repo
+
 
 rpm --import https://brave-browser-rpm-release.s3.brave.com/brave-core.asc
-
-dnf config-manager --disable AppStream
-dnf config-manager --disable BaseOS
-dnf config-manager --disable PowerTools
-dnf config-manager --disable fasttrack
-dnf config-manager --disable extras
-dnf config-manager --disable epel
 
 # Desabilita serviços desnecessários ========================================================================================
 # systemctl disable wpa_supplicant.service # Notebook?
@@ -64,33 +68,74 @@ wget --no-check-certificate http://techmago.sytes.net/rpm/techmago.sh
 mv techmago.sh /etc/profile.d/
 
 # Remove programas inuteis ==================================================================================================
-dnf remove -y PackageKit-yum abrt* postfix crash empathy hypervkvpdy qemu-guest-agent spice-vdagent open-vm-tools
+dnf remove -y abrt* postfix crash empathy hypervkvpdy qemu-guest-agent spice-vdagent open-vm-tools
 
 # Executa a primeira atualização de sistema =================================================================================
 dnf update -y --skip-broken
 
 # Instala pacotes ===========================================================================================================
-# Sistema
-dnf install -y pigz pxz pbzip2 zlib unrar bzip2 xz-lzma-compat xz lrzip p7zip p7zip-plugins lzip cabextract
-dnf install -y htop iotop iftop bmon pydf inxi nload ntpdate fortune-mod bash-completion
-dnf install -y net-tools byobu mlocate psmisc hddtemp lm_sensors glances
+# Utilidades
+pacotes=""                                                             # Inicia a variável
+pacotes="${pacotes} zlib unrar bzip2 xz-lzma-compat xz p7zip p7zip-plugins lzip lrzip cabextract pigz pxz pbzip2"
+pacotes="${pacotes} htop iotop iftop pydf bmon pydf inxi nload"
+pacotes="${pacotes} ntpdate fortune-mod gnome-disk-utility terminator bash-completion"
+pacotes="${pacotes} net-tools mlocate psmisc hddtemp lm_sensors glances"
 
-# Media
-dnf install -y spotify-client
-dnf install -y vlc smplayer
-dnf install -y gstreamer1-plugins-ugly gstreamer1-libav ffmpeg HandBrake-{gui,cli} gstreamer1-plugins-bad-freeworld
+if [ "${devel}" = yes ]; then
+	pacotes="${pacotes} unison sshfs byobu nfs-utils gparted"
+fi
 
-# Escritorio
-#dnf install -y texmaker texlive-scheme-small texlive-collection-langportuguese texlive-supertabular texlive-tocloft texlive-hyphenat texlive-moderncv
-dnf install -y terminator freetype-freeworld gparted
-dnf install -y meld nextcloud-client-nautilus nextcloud-client
-dnf install -y gimp kolourpaint geany
+if [$(rpm -q gnome-session > /dev/null) $? -eq 0 ]; then
+	pacotes="${pacotes} nautilus-dropbox nautilus-open-terminal evince-nautilus easytag-nautilus nextcloud-client-nautilus"
+	pacotes="${pacotes} gnome-tweak-tool chrome-gnome-shell"
+fi
+
+if [$(rpm -q gnome-session > /dev/null) $? -eq 0 ]; then
+  	pacotes="${pacotes} nautilus-dropbox nautilus-extensions evince-nautilus brasero-nautilus nextcloud-client-nautilus"
+  	pacotes="${pacotes} gnome-tweak-tool chrome-gnome-shell"
+    pacotes="${pacotes} gnome-shell-extension-apps-menu gnome-shell-extension-top-icons gnome-shell-extension-places-menu gnome-shell-extension-window-list gnome-shell-extension-desktop-icons gnome-shell-extension-no-hot-corner gnome-shell-extension-launch-new-instance"
+fi
+dnf -y --skip-broken --allowerasing install ${pacotes}
+
 
 # Internet
-dnf install -y wget curl telnet brave-browser google-chrome-stable thunderbird
-dnf install -y filezilla youtubedl
-dnf install -y vim flash-plugin google-chrome-stable
-dnf install -y remmina remmina-plugins-nx remmina-gnome-session remmina-plugins-rdp remmina-plugins-vnc remmina-plugins-www remmina-plugins-spice remmina-plugins-xdmcp remmina-plugins-kwallet remmina-plugins-st remmina-plugins-secret remmina-plugins-exec
+pacotes=""                                                             # Inicia a variável
+pacotes="${pacotes} wget curl telnet"
+pacotes="${pacotes} transmission filezilla youtube-dl"
+pacotes="${pacotes} flash-plugin firefox google-chrome-stable brave-browser"
+pacotes="${pacotes} thunderbird thunderbird-lightning"
+pacotes="${pacotes} remmina remmina-plugins-nx remmina-gnome-session remmina-plugins-rdp remmina-plugins-vnc remmina-plugins-www remmina-plugins-spice remmina-plugins-xdmcp remmina-plugins-kwallet remmina-plugins-st remmina-plugins-secret remmina-plugins-exec"
+dnf -y --skip-broken --allowerasing install ${pacotes}
+
+# Multimidia
+pacotes=""                                                             # Inicia a variável
+pacotes="${pacotes} gstreamer1-libav gstreamer1 gstreamer-plugin-crystalhd gstreamer1-plugins-good PackageKit-gstreamer-plugin gstreamer1-plugins-bad-free gstreamer1-plugins-base gstreamer1-plugins-ugly gstreamer1-plugins-ugly-free gstreamer1-plugins-bad-freeworld gstreamer1-plugins-bad-nonfree gnome-video-effects"
+pacotes="${pacotes} mplayer smplayer rhythmbox cheese brasero spotify-client vlc"
+pacotes="${pacotes} ffmpeg HandBrake-{gui,cli}"
+dnf -y --skip-broken --allowerasing install ${pacotes}
+
+
+# Jogos
+pacotes=""                                                             # Inicia a variável
+if [ "${jogos}" = yes ]; then
+  pacotes="${pacotes} aisleriot apx five-or-more gnome-klotski gnome-mahjongg vitetris gnome-sudoku gnome-mines gnome-tetravex gnome-nibbles gnome-robots lightsoff"
+fi
+if [ "${steam}" = yes ]; then
+	pacotes="${pacotes} steam"
+fi
+dnf -y --skip-broken --nobest --allowerasing install ${pacotes}
+
+
+# Escritorio
+pacotes=""                                                             # Inicia a variável
+pacotes="${pacotes} meld gimp kolourpaint geany terminator"
+
+pacotes="${pacotes} libreoffice-langpack-pt-BR libreoffice-impress libreoffice-calc libreoffice-draw libreoffice-writer libreoffice-pdfimport"
+pacotes="${pacotes} ubuntu-title-fonts freetype-freeworld"
+dnf -y --skip-broken --nobest --allowerasing install ${pacotes}
+
+pacotes="${pacotes} texmaker texlive-scheme-small texlive-collection-langportuguese texlive-supertabular texlive-tocloft texlive-hyphenat texlive-moderncv"
+
 
 if [ "${steam}" = yes ]; then
 	pacotes="${pacotes} steam"
