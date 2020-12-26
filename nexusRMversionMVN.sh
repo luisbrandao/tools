@@ -8,7 +8,8 @@ i=0
 # ------------------------------------------------------------------------------
 
 # Check minimum arguments
-if [ "$#" -le 2 ]; then
+if [ "$#" -le 1 ]; then
+    echo "Params: $#"
     echo 'I need at least 2 arguments!'
     echo 'bash nexusRMversionMVN.sh br.com.example.acc green* purple.111 yellow.*'
     exit 1
