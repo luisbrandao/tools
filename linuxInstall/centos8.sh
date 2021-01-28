@@ -87,6 +87,7 @@ pacotes="" # Limpa a variável
 pacotes="${pacotes} gstreamer1-libav gstreamer1 gstreamer-plugin-crystalhd gstreamer1-plugins-good PackageKit-gstreamer-plugin gstreamer1-plugins-bad-free gstreamer1-plugins-base gstreamer1-plugins-ugly gstreamer1-plugins-ugly-free gstreamer1-plugins-bad-freeworld gstreamer1-plugins-bad-nonfree gnome-video-effects"
 pacotes="${pacotes} mplayer smplayer rhythmbox cheese brasero spotify-client vlc"
 pacotes="${pacotes} ffmpeg HandBrake-{gui,cli}"
+
 dnf -y --skip-broken --allowerasing install ${pacotes}
 
 # Jogos
@@ -105,6 +106,7 @@ pacotes="${pacotes} zlib unrar bzip2 xz-lzma-compat xz p7zip p7zip-plugins lzip 
 pacotes="${pacotes} htop iotop iftop pydf bmon pydf inxi nload"
 pacotes="${pacotes} ntpdate fortune-mod gnome-disk-utility terminator bash-completion"
 pacotes="${pacotes} net-tools mlocate psmisc hddtemp lm_sensors glances"
+pacotes="${pacotes} ntfs-3g ntfsprogs fuse-exfat exfat-utils"
 
 if [ "${devel}" = yes ]; then
 	pacotes="${pacotes} unison sshfs byobu nfs-utils gparted"
@@ -173,7 +175,11 @@ wget --no-check-certificate http://legacy.techsytes.com/rpm/fluendo-codecs-mp3-1
 dnf -y install --nogpgcheck fluendo-codecs-mp3-17-3.i386.rpm
 rm -f fluendo-codecs-mp3-17-3.i386.rpm
 
-# Java =====================================================================================================================================
+# Flathub ====================================================================================================================
+flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+
+
+# Java =======================================================================================================================
 wget --no-check-certificate http://legacy.techsytes.com/rpm/jre.rpm
 dnf -y install --nogpgcheck jre.rpm
 rm -f jre.rpm
