@@ -42,6 +42,7 @@ else
 	dnf config-manager --disable extras
 fi
 
+dnf config-manager --add-repo http://dl.google.com/linux/chrome/rpm/stable/x86_64/
 dnf config-manager --add-repo https://brave-browser-rpm-release.s3.brave.com/x86_64/
 dnf config-manager --add-repo https://negativo17.org/repos/epel-spotify.repo
 dnf config-manager --add-repo https://negativo17.org/repos/epel-steam.repo
@@ -75,12 +76,11 @@ dnf update -y --skip-broken
 # Instala pacotes ===========================================================================================================
 # Internet
 pacotes="" # Limpa a variável
-pacotes="${pacotes} wget curl telnet"
 pacotes="${pacotes} transmission filezilla youtube-dl"
 pacotes="${pacotes} flash-plugin firefox google-chrome-stable brave-browser"
 pacotes="${pacotes} thunderbird"
 pacotes="${pacotes} remmina remmina-plugins-nx remmina-gnome-session remmina-plugins-rdp remmina-plugins-vnc remmina-plugins-www remmina-plugins-spice remmina-plugins-xdmcp remmina-plugins-kwallet remmina-plugins-st remmina-plugins-secret remmina-plugins-exec"
-dnf -y --skip-broken --allowerasing install ${pacotes}
+dnf -y --skip-broken --best --allowerasing install ${pacotes}
 
 # Multimidia
 pacotes="" # Limpa a variável
@@ -88,7 +88,7 @@ pacotes="${pacotes} gstreamer1-libav gstreamer1 gstreamer-plugin-crystalhd gstre
 pacotes="${pacotes} mplayer smplayer rhythmbox cheese brasero spotify-client vlc"
 pacotes="${pacotes} ffmpeg HandBrake-{gui,cli}"
 
-dnf -y --skip-broken --allowerasing install ${pacotes}
+dnf -y --skip-broken --best --allowerasing install ${pacotes}
 
 # Jogos
 pacotes="" # Limpa a variável
@@ -98,7 +98,7 @@ fi
 if [ "${steam}" = yes ]; then
 	pacotes="${pacotes} steam"
 fi
-dnf -y --skip-broken --nobest --allowerasing install ${pacotes}
+dnf -y --skip-broken --best --allowerasing install ${pacotes}
 
 # Utilidades
 pacotes="" # Limpa a variável
@@ -107,6 +107,7 @@ pacotes="${pacotes} htop iotop iftop pydf bmon pydf inxi nload"
 pacotes="${pacotes} ntpdate fortune-mod gnome-disk-utility terminator bash-completion"
 pacotes="${pacotes} net-tools mlocate psmisc hddtemp lm_sensors glances"
 pacotes="${pacotes} ntfs-3g ntfsprogs fuse-exfat exfat-utils"
+pacotes="${pacotes} wine"
 
 if [ "${devel}" = yes ]; then
 	pacotes="${pacotes} unison sshfs byobu nfs-utils gparted"
@@ -117,7 +118,7 @@ if [$(rpm -q gnome-session > /dev/null) $? -eq 0 ]; then
   	pacotes="${pacotes} gnome-tweak-tool chrome-gnome-shell gnome-system-monitor"
     pacotes="${pacotes} gnome-shell-extension-apps-menu gnome-shell-extension-top-icons gnome-shell-extension-places-menu gnome-shell-extension-window-list gnome-shell-extension-desktop-icons gnome-shell-extension-no-hot-corner gnome-shell-extension-launch-new-instance"
 fi
-dnf -y --skip-broken --allowerasing install ${pacotes}
+dnf -y --skip-broken --best --allowerasing install ${pacotes}
 
 
 # Escritorio
@@ -125,7 +126,7 @@ pacotes="" # Limpa a variável                                                  
 pacotes="${pacotes} meld gimp kolourpaint geany terminator"
 pacotes="${pacotes} libreoffice-langpack-pt-BR libreoffice-impress libreoffice-calc libreoffice-draw libreoffice-writer libreoffice-pdfimport"
 pacotes="${pacotes} ubuntu-title-fonts freetype-freeworld"
-dnf -y --skip-broken --nobest --allowerasing install ${pacotes}
+dnf -y --skip-broken --best --allowerasing install ${pacotes}
 
 # Broken
 # pacotes="${pacotes} texmaker texlive-scheme-small texlive-collection-langportuguese texlive-supertabular texlive-tocloft texlive-hyphenat texlive-moderncv"
@@ -150,7 +151,7 @@ pacotes="${pacotes} gtk3-devel libcurl-devel libgpod-devel libnotify-devel nauti
 pacotes="${pacotes} qt5-linguist qt5-qtbase-devel qt5-qtscript-devel qt5-qttools-devel qt5-qtwebkit-devel qtsingleapplication-qt5-devel"
 pacotes="${pacotes} dirac-devel"
 
-dnf -y --skip-broken --nobest --allowerasing install ${pacotes}
+dnf -y --skip-broken --best --allowerasing install ${pacotes}
 
 # Atom ======================================================================================================================
 wget https://atom.io/download/rpm -O atom.rpm
@@ -167,25 +168,20 @@ echo '#!/usr/bin/env bash
 # Instala um pacote de senhas do windows ====================================================================================
 wget --no-check-certificate http://legacy.techsytes.com/rpm/fontesWindows.txz
 tar -xJf fontesWindows.txz
+chown -R root:root fontesWindows
 mv fontesWindows /usr/share/fonts/
 rm -f fontesWindows.txz
 
-# Fluendo mp3 codecs ========================================================================================================
-wget --no-check-certificate http://legacy.techsytes.com/rpm/fluendo-codecs-mp3-17-3.i386.rpm
-dnf -y install --nogpgcheck fluendo-codecs-mp3-17-3.i386.rpm
-rm -f fluendo-codecs-mp3-17-3.i386.rpm
-
 # Flathub ====================================================================================================================
 flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
-
 
 # Java =======================================================================================================================
 wget --no-check-certificate http://legacy.techsytes.com/rpm/jre.rpm
 dnf -y install --nogpgcheck jre.rpm
 rm -f jre.rpm
 
-alternatives --install /usr/bin/java java /usr/java/latest/bin/java 20000
-alternatives --install /usr/bin/javaws javaws /usr/java/latest/bin/javaws 20000
+#alternatives --install /usr/bin/java java /usr/java/latest/bin/java 20000
+#alternatives --install /usr/bin/javaws javaws /usr/java/latest/bin/javaws 20000
 
-alternatives --config java
-alternatives --config javaws
+#alternatives --config java
+#alternatives --config javaws
