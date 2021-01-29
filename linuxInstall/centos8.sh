@@ -42,7 +42,7 @@ else
 	dnf config-manager --disable extras
 fi
 
-dnf config-manager --add-repo http://dl.google.com/linux/chrome/rpm/stable/x86_64/
+dnf config-manager --add-repo https://dl.google.com/linux/chrome/rpm/stable/x86_64/
 dnf config-manager --add-repo https://brave-browser-rpm-release.s3.brave.com/x86_64/
 dnf config-manager --add-repo https://negativo17.org/repos/epel-spotify.repo
 dnf config-manager --add-repo https://negativo17.org/repos/epel-steam.repo
