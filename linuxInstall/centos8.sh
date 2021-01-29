@@ -58,10 +58,7 @@ systemctl stop ModemManager.service
 systemctl mask ModemManager.service
 systemctl disable firewalld.service
 systemctl disable ipmievd.service
-systemctl disable lvm2-lvmetad.socket
-systemctl disable lvm2-lvmpolld.socket
 systemctl disable cryptsetup.target
-
 
 # Da um boost no terminal ===================================================================================================
 wget --no-check-certificate http://legacy.techsytes.com/rpm/techmago.sh
@@ -107,7 +104,7 @@ pacotes="${pacotes} htop iotop iftop pydf bmon pydf inxi nload"
 pacotes="${pacotes} ntpdate fortune-mod gnome-disk-utility terminator bash-completion"
 pacotes="${pacotes} net-tools mlocate psmisc hddtemp lm_sensors glances"
 pacotes="${pacotes} ntfs-3g ntfsprogs fuse-exfat exfat-utils"
-pacotes="${pacotes} wine"
+pacotes="${pacotes} wine winetricks"
 
 if [ "${devel}" = yes ]; then
 	pacotes="${pacotes} unison sshfs byobu nfs-utils gparted"
