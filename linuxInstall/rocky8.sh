@@ -63,7 +63,7 @@ wget --no-check-certificate http://legacy.techsytes.com/rpm/techmago.sh
 mv techmago.sh /etc/profile.d/
 
 # Remove programas inuteis ==================================================================================================
-dnf remove -y abrt* postfix crash empathy hypervkvpdy qemu-guest-agent spice-vdagent open-vm-tools
+dnf remove -y abrt* postfix crash empathy hypervkvpdy qemu-guest-agent spice-vdagent open-vm-tools gnome-boxes
 rpm -e --nodeps kernel-rx-headers
 
 # Executa a primeira atualização de sistema =================================================================================
