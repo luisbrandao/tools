@@ -125,7 +125,7 @@ dnf -y --nogpg --skip-broken --best --allowerasing install ${pacotes}
 pacotes="" # Limpa a variável                                                       # Inicia a variável
 pacotes="${pacotes} meld gimp kolourpaint geany terminator"
 pacotes="${pacotes} libreoffice-langpack-pt-BR libreoffice-impress libreoffice-calc libreoffice-draw libreoffice-writer libreoffice-pdfimport"
-pacotes="${pacotes} ubuntu-title-fonts freetype-freeworld"
+pacotes="${pacotes} ubuntu-family-fonts freetype-freeworld gnome-shell-extension-openweather"
 dnf -y --nogpg --skip-broken --best --allowerasing install ${pacotes}
 
 # Broken
