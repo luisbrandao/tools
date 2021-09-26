@@ -64,6 +64,7 @@ mv techmago.sh /etc/profile.d/
 
 # Remove programas inuteis ==================================================================================================
 dnf remove -y abrt* postfix crash empathy hypervkvpdy qemu-guest-agent spice-vdagent open-vm-tools
+rpm -e --nodeps kernel-rx-headers
 
 # Executa a primeira atualização de sistema =================================================================================
 dnf update -y --skip-broken
@@ -104,6 +105,9 @@ pacotes="${pacotes} ntpdate fortune-mod gnome-disk-utility terminator bash-compl
 pacotes="${pacotes} net-tools mlocate psmisc hddtemp lm_sensors glances"
 pacotes="${pacotes} ntfs-3g ntfsprogs fuse-exfat exfat-utils"
 pacotes="${pacotes} wine winetricks flatpak"
+pacotes="${pacotes} xprop libwnck3 xwininfo xdotool"
+pacotes="${pacotes} java-latest-openjdk java-11-openjdk"
+
 
 if [ "${devel}" = yes ]; then
 	pacotes="${pacotes} unison sshfs byobu nfs-utils gparted"
