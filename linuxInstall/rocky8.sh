@@ -26,8 +26,9 @@ repos="epel-release"
 repos="${repos} https://download1.rpmfusion.org/free/el/rpmfusion-free-release-8.noarch.rpm"
 repos="${repos} https://download1.rpmfusion.org/nonfree/el/rpmfusion-nonfree-release-8.noarch.rpm"
 repos="${repos} http://linuxdownload.adobe.com/adobe-release/adobe-release-x86_64-1.0-1.noarch.rpm"
-
+repos="${repos} https://pkgs.dyn.su/el8/base/x86_64/raven-release-1.0-2.el8.noarch.rpm"
 dnf -y install --nogpgcheck ${repos} dnf-utils
+
 
 if ${local} ; then
   dnf config-manager --disable appstream baseos powertools extras epel epel-modular
