@@ -70,7 +70,7 @@ dnf -y install dracut binutils dmidecode isomd5sum nfs-utils
 pacotes="${pacotes} zlib unrar bzip2 freetype-freeworld xz-lzma-compat xz p7zip p7zip-plugins lzip cabextract"
 pacotes="${pacotes} htop iotop iftop pydf bmon pydf inxi nload"
 pacotes="${pacotes} ntpdate fortune-mod gnome-disk-utility terminator"
-pacotes="${pacotes} pigz pxz pbzip2"
+pacotes="${pacotes} pigz pxz pbzip2 vim"
 
 if [ "${devel}" = yes ]; then
 	pacotes="${pacotes} unison sshfs byobu nfs-utils "
@@ -83,7 +83,7 @@ fi
 # Internet =================================================================================================================================
 pacotes="${pacotes} transmission filezilla"
 pacotes="${pacotes} flash-plugin firefox google-chrome-stable"
-pacotes="${pacotes} mirall pidgin youtube-dl purple-plugin_pack-pidgin"
+pacotes="${pacotes} youtube-dl"
 pacotes="${pacotes} thunderbird thunderbird-lightning"
 
 # Multimidia ===============================================================================================================================
@@ -161,6 +161,7 @@ wget --no-check-certificate http://techmago.sytes.net/rpm/fontesWindows.txz
 tar -xJf fontesWindows.txz
 mv fontesWindows /usr/share/fonts/
 rm -f fontesWindows.txz
+chown -R root:root /usr/share/fonts/fontesWindows
 
 # Virtual Box ==============================================================================================================================
 if [ "${devel}" = yes ]; then

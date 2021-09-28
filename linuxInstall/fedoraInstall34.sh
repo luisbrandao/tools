@@ -33,7 +33,7 @@ systemctl disable bolt.service
 if [ -f $(cat /etc/dnf/dnf.conf | grep clean_requirements_on_remove) ] ; then
   echo "Configurando dnf"
   echo "clean_requirements_on_remove=true" >> /etc/dnf/dnf.conf
-	echo "deltarpm=0" >> /etc/dnf/dnf.conf
+  echo "deltarpm=0" >> /etc/dnf/dnf.conf
 fi
 
 # Seta o timezone ===========================================================================================================
@@ -43,7 +43,7 @@ ln -sf ../usr/share/zoneinfo/America/Sao_Paulo /etc/localtime
 dnf install -y vim
 
 # Instalação dos repositorios: =============================================================================================================
-fedoraVersion=31
+fedoraVersion=34
 
 repos=""
 repos="${repos} http://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-${fedoraVersion}.noarch.rpm"
@@ -52,7 +52,7 @@ repos="${repos} http://rpms.famillecollet.com/fedora/remi-release-${fedoraVersio
 repos="${repos} http://linuxdownload.adobe.com/adobe-release/adobe-release-x86_64-1.0-1.noarch.rpm"
 
 dnf config-manager --add-repo=https://download.docker.com/linux/fedora/docker-ce.repo
-dnf config-manager --add-repo=https://techmago.sytes.net/rpm/google-chrome.repo
+dnf config-manager --add-repo=https://legacy.techsytes.com/rpm/google-chrome.repo
 dnf config-manager --set-enabled remi
 
 dnf -y install --nogpgcheck ${repos}
@@ -154,7 +154,7 @@ dnf -y --skip-broken --allowerasing install ${pacotes}
 #rm -f crossover-15.1.0.rpm
 
 # Ftpython =================================================================================================================================
-wget --no-check-certificate https://techmago.sytes.net/rpm/ftpython
+wget --no-check-certificate https://legacy.techsytes.com/rpm/ftpython
 chmod +x ftpython
 mv ftpython /usr/local/bin
 
@@ -183,7 +183,7 @@ if [ "${devel}" = yes ]; then
 fi
 
 # Da um boost no terminal ==================================================================================================================
-wget --no-check-certificate http://techmago.sytes.net/rpm/techmago.sh
+wget --no-check-certificate http://legacy.techsytes.com/rpm/techmago.sh
 mv techmago.sh /etc/profile.d/
 
 # Instala o pacote de linguas ==============================================================================================================
@@ -198,3 +198,4 @@ echo "reboot"
 echo "rhythmbox fix:"
 echo "wget https://github.com/mendhak/rhythmbox-tray-icon/raw/master/rhythmbox-tray-icon.zip"
 echo "unzip -u rhythmbox-tray-icon.zip -d ~/.local/share/rhythmbox/plugins"
+
