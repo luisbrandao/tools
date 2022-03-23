@@ -2,11 +2,10 @@
 # ---------------------------------------------------------------------------------------------------------------------------
 # ------------------------------------------------------[ Configuração ]-----------------------------------------------------
 repos=""                                                               # Inicia a variável
-pacotes=""                                                             # Inicia a variável
 local="true"                                                           # Inicia a variável
 devel="yes"                                                            # Instala coisas do pseudogrupo "devel"
 jogos="yes"                                                            # Instala os jogos básicos
-steam="no"                                                            # Instala a steam
+steam="yes"                                                            # Instala a steam
 # ------------------------------------------------------[ Configuração ]-----------------------------------------------------
 # ---------------------------------------------------------------------------------------------------------------------------
 # Checa SELINUX =============================================================================================================
@@ -18,32 +17,38 @@ if [ -f $(cat /etc/selinux/config | grep 'SELINUX=disabled') ] ; then
 	exit 1
 fi
 
+# retenta instalar se necessário
+function recheck_retry {
+  for file in ${1} ; do
+    rpm -q $file > /dev/null
+    rpmstat=$?
+    if [[ "${rpmstat}" -eq "1" ]] ; then
+      echo "Reinstalando: ${file}"
+      dnf -y --nogpg --skip-broken --best --allowerasing install ${file}
+    fi
+  done
+}
+
 # Seta o timezone ===========================================================================================================
 ln -sf ../usr/share/zoneinfo/America/Sao_Paulo /etc/localtime
 
 # Configuração de repositórios ==============================================================================================
-repos="epel-release"
-repos="${repos} https://download1.rpmfusion.org/free/el/rpmfusion-free-release-8.noarch.rpm"
-repos="${repos} https://download1.rpmfusion.org/nonfree/el/rpmfusion-nonfree-release-8.noarch.rpm"
-repos="${repos} http://linuxdownload.adobe.com/adobe-release/adobe-release-x86_64-1.0-1.noarch.rpm"
-repos="${repos} https://pkgs.dyn.su/el8/base/x86_64/raven-release-1.0-2.el8.noarch.rpm"
-dnf -y install --nogpgcheck ${repos} dnf-utils
-
-
 if ${local} ; then
   dnf config-manager --disable appstream baseos powertools extras epel epel-modular
-	dnf config-manager --add-repo https://legacy.techsytes.com/rpm/rocky8-techsytes.repo
+	dnf config-manager --add-repo https://raw.githubusercontent.com/luisbrandao/tools/master/linuxInstall/rocky8/repos/rocky8-techsytes.repo
 else
 	dnf config-manager --disable extras
 fi
 
-dnf config-manager --add-repo https://dl.google.com/linux/chrome/rpm/stable/x86_64/
-dnf config-manager --add-repo https://brave-browser-rpm-release.s3.brave.com/x86_64/
 dnf config-manager --add-repo https://negativo17.org/repos/epel-spotify.repo
 dnf config-manager --add-repo https://negativo17.org/repos/epel-steam.repo
-
+dnf config-manager --add-repo https://raw.githubusercontent.com/luisbrandao/tools/master/linuxInstall/rocky8/repos/brave.repo
+dnf config-manager --add-repo https://raw.githubusercontent.com/luisbrandao/tools/master/linuxInstall/rocky8/repos/google-chrome.repo
+dnf config-manager --add-repo https://raw.githubusercontent.com/luisbrandao/tools/master/linuxInstall/rocky8/repos/docker.repo
+dnf config-manager --add-repo https://raw.githubusercontent.com/luisbrandao/tools/master/linuxInstall/rocky8/repos/slack.repo
 
 rpm --import https://brave-browser-rpm-release.s3.brave.com/brave-core.asc
+echo 'repo_add_once="false"' > /etc/default/google-chrome
 
 # Desabilita serviços desnecessários ========================================================================================
 # systemctl disable wpa_supplicant.service # Notebook?
@@ -60,7 +65,7 @@ systemctl stop lvm2-monitor.service
 systemctl stop kdump.service
 systemctl mask kdump.service
 # Da um boost no terminal ===================================================================================================
-wget --no-check-certificate http://legacy.techsytes.com/rpm/techmago.sh
+wget --no-check-certificate https://raw.githubusercontent.com/luisbrandao/tools/master/techmago.sh
 mv techmago.sh /etc/profile.d/
 
 # Remove programas inuteis ==================================================================================================
@@ -78,7 +83,7 @@ pacotes="${pacotes} transmission filezilla youtube-dl"
 pacotes="${pacotes} flash-plugin firefox google-chrome-stable brave-browser"
 pacotes="${pacotes} thunderbird"
 pacotes="${pacotes} remmina remmina-plugins-nx remmina-gnome-session remmina-plugins-rdp remmina-plugins-vnc remmina-plugins-www remmina-plugins-spice remmina-plugins-xdmcp remmina-plugins-kwallet remmina-plugins-st remmina-plugins-secret remmina-plugins-exec"
-dnf -y --nogpg --skip-broken --best --allowerasing install ${pacotes}
+dnf -y --nogpg --skip-broken --best --allowerasing install ${pacotes} ; recheck_retry "${pacotes}"
 
 # Multimidia
 pacotes="" # Limpa a variável
@@ -86,7 +91,7 @@ pacotes="${pacotes} gstreamer1-libav gstreamer1 gstreamer-plugin-crystalhd gstre
 pacotes="${pacotes} mplayer smplayer rhythmbox cheese brasero spotify-client vlc"
 pacotes="${pacotes} ffmpeg"
 
-dnf -y --nogpg --skip-broken --best --allowerasing install ${pacotes}
+dnf -y --nogpg --skip-broken --best --allowerasing install ${pacotes} ; recheck_retry "${pacotes}"
 
 # Jogos
 pacotes="" # Limpa a variável
@@ -96,7 +101,7 @@ fi
 if [ "${steam}" = yes ]; then
 	pacotes="${pacotes} steam"
 fi
-dnf -y --nogpg --skip-broken --best --allowerasing install ${pacotes}
+dnf -y --nogpg --skip-broken --best --allowerasing install ${pacotes} ; recheck_retry "${pacotes}"
 
 # Utilidades
 pacotes="" # Limpa a variável
@@ -119,21 +124,23 @@ if [$(rpm -q gnome-session > /dev/null) $? -eq 0 ]; then
   	pacotes="${pacotes} gnome-tweak-tool chrome-gnome-shell gnome-system-monitor"
     pacotes="${pacotes} gnome-shell-extension-apps-menu gnome-shell-extension-top-icons gnome-shell-extension-places-menu gnome-shell-extension-window-list gnome-shell-extension-desktop-icons gnome-shell-extension-no-hot-corner gnome-shell-extension-launch-new-instance"
 fi
-dnf -y --nogpg --skip-broken --best --allowerasing install ${pacotes}
+dnf -y --nogpg --skip-broken --best --allowerasing install ${pacotes} ; recheck_retry "${pacotes}"
 
 
 # Escritorio
 pacotes="" # Limpa a variável                                                       # Inicia a variável
-pacotes="${pacotes} meld gimp kolourpaint geany terminator"
+pacotes="${pacotes} atom meld gimp kolourpaint geany terminator"
 pacotes="${pacotes} libreoffice-langpack-pt-BR libreoffice-impress libreoffice-calc libreoffice-draw libreoffice-writer libreoffice-pdfimport"
 pacotes="${pacotes} ubuntu-family-fonts freetype-freeworld gnome-shell-extension-openweather"
-dnf -y --nogpg --skip-broken --best --allowerasing install ${pacotes}
+dnf -y --nogpg --skip-broken --best --allowerasing install ${pacotes} ; recheck_retry "${pacotes}"
 
 # Broken
 # pacotes="${pacotes} texmaker texlive-scheme-small texlive-collection-langportuguese texlive-supertabular texlive-tocloft texlive-hyphenat texlive-moderncv"
 
 # Desenvolvimento
 pacotes=""
+pacotes="${pacotes} java-11-openjdk java-11-openjdk-devel maven"
+pacotes="${pacotes} java-1.8.0-openjdk java-1.8.0-openjdk-devel"
 pacotes="${pacotes} gtk2-immodules mono-core mono-devel"
 pacotes="${pacotes} acpid elfutils-libelf-devel  kernel-tools-libs  kernel-tools kernel-modules-extra kernel-modules kernel-devel linux-firmware"
 pacotes="${pacotes} mesa-dri-drivers.i686 mesa-dri-drivers.x86_64 mesa-filesystem.i686 mesa-filesystem.x86_64 mesa-libEGL.i686 mesa-libEGL.x86_64"
@@ -150,13 +157,7 @@ pacotes="${pacotes} libdv-devel libmpeg2-devel libmpg123-devel librtmp-devel lib
 pacotes="${pacotes} lirc-devel lzo-devel pulseaudio-libs-devel speex-devel x264-devel xvidcore-devel yasm dbus-glib-devel"
 pacotes="${pacotes} gtk3-devel libcurl-devel libgpod-devel libnotify-devel nautilus-devel"
 pacotes="${pacotes} qt5-linguist qt5-qtbase-devel qt5-qtscript-devel qt5-qttools-devel qt5-qtwebkit-devel qtsingleapplication-qt5-devel"
-
-dnf -y --nogpg --skip-broken --best --allowerasing install ${pacotes}
-
-# Atom ======================================================================================================================
-wget https://atom.io/download/rpm -O atom.rpm
-dnf -y install atom.rpm
-rm -f atom.rpm
+dnf -y --nogpg --skip-broken --best --allowerasing install ${pacotes} ; recheck_retry "${pacotes}"
 
 # Hack para deletar arquivos
 echo '#!/usr/bin/env bash
