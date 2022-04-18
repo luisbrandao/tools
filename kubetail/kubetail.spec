@@ -1,6 +1,6 @@
 Summary: Bash script that enables you to aggregate (tail/follow) logs from multiple pods into one stream.
 Name: kubetail
-Version: 1.6.7
+Version: 1.6.8
 Release: 3%{?dist}
 License: GPLv2
 Group: Applications/Tools
@@ -8,7 +8,7 @@ Source0: %{name}-%{version}.tar.bz2
 BuildArch: noarch
 URL: https://github.com/johanhaleby/kubetail
 
-Requires: kubernetes-client
+Requires: kubectl
 Requires: bash-completion
 
 # No debug info for bare scripts, right?

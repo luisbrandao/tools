@@ -1,7 +1,7 @@
 PREFIX ?= /usr
 SYSTEMD_UNITDIR ?= $(PREFIX)/lib/systemd/system
 SYSCONFDIR ?= /etc/sysconfig
-VERSION=1.6.7
+VERSION=1.6.8
 SRC_FILES=Makefile README.md kubetail kubetail.spec kubetail.bash
 
 install:
