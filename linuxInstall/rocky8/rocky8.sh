@@ -50,6 +50,9 @@ dnf config-manager --add-repo https://raw.githubusercontent.com/luisbrandao/tool
 rpm --import https://brave-browser-rpm-release.s3.brave.com/brave-core.asc
 echo 'repo_add_once="false"' > /etc/default/google-chrome
 
+dnf clean all
+dnf makecache
+
 # Desabilita serviços desnecessários ========================================================================================
 # systemctl disable wpa_supplicant.service # Notebook?
 systemctl stop auditd.service
