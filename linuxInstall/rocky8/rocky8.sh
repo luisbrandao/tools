@@ -83,9 +83,9 @@ dnf update -y --skip-broken
 pacotes="" # Limpa a variável
 pacotes="${pacotes} network-manager-applet"
 pacotes="${pacotes} transmission filezilla youtube-dl"
-pacotes="${pacotes} flash-plugin firefox google-chrome-stable brave-browser"
+pacotes="${pacotes} firefox google-chrome-stable brave-browser"
 pacotes="${pacotes} thunderbird"
-pacotes="${pacotes} remmina remmina-plugins-nx remmina-gnome-session remmina-plugins-rdp remmina-plugins-vnc remmina-plugins-www remmina-plugins-spice remmina-plugins-xdmcp remmina-plugins-kwallet remmina-plugins-st remmina-plugins-secret remmina-plugins-exec"
+pacotes="${pacotes} remmina remmina-gnome-session remmina-plugins-rdp remmina-plugins-vnc remmina-plugins-www remmina-plugins-spice remmina-plugins-kwallet remmina-plugins-secret remmina-plugins-exec"
 dnf -y --nogpg --skip-broken --best --allowerasing install ${pacotes} ; recheck_retry "${pacotes}"
 
 # Multimidia
