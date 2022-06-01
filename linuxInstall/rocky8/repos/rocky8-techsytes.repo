@@ -14,14 +14,14 @@ gpgcheck=0
 
 [techsytes-8-epel]
 name=techsytes - 8 - epel
-baseurl=https://repo.techsytes.com/repository/centos-8-epel
+baseurl=https://repo.techsytes.com/repository/rocky-8-epel
 enabled=1
 metadata_expire=6h
 gpgcheck=0
 
 [techsytes-8-epel-modular]
 name=techsytes - 8 - epel modular
-baseurl=https://repo.techsytes.com/repository/centos-8-epel-modular
+baseurl=https://repo.techsytes.com/repository/rocky-8-epel-modular
 enabled=1
 metadata_expire=6h
 gpgcheck=0
