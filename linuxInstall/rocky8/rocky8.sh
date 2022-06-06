@@ -34,7 +34,9 @@ ln -sf ../usr/share/zoneinfo/America/Sao_Paulo /etc/localtime
 
 # Configuração de repositórios ==============================================================================================
 if ${local} ; then
-  dnf config-manager --disable appstream baseos powertools extras epel epel-modular
+  dnf config-manager --disable appstream baseos powertools extras
+  dnf config-manager --disable epel epel-modular
+  dnf config-manager --disable rpmfusion-free-updates rpmfusion-nonfree-updates
 	dnf config-manager --add-repo https://raw.githubusercontent.com/luisbrandao/tools/master/linuxInstall/rocky8/repos/rocky8-techsytes.repo
 else
 	dnf config-manager --disable extras

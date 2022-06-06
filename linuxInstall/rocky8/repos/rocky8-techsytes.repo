@@ -40,14 +40,14 @@ enabled=1
 metadata_expire=6h
 gpgcheck=0
 
-[rocky-8-rpmfusion-free]
+[techsytes-8-rpmfusion-free]
 name=techsytes - 8 - rpmfusion-free
 baseurl=https://repo.techsytes.com/repository/rocky-8-rpmfusion-free/
 enabled=1
 metadata_expire=6h
 gpgcheck=0
 
-[rocky-8-rpmfusion-nonfree]
+[techsytes-8-rpmfusion-nonfree]
 name=techsytes - 8 - rpmfusion-nonfree
 baseurl=https://repo.techsytes.com/repository/rocky-8-rpmfusion-nonfree/
 enabled=1
