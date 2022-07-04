@@ -172,7 +172,7 @@ echo '#!/usr/bin/env bash
 ' | tee /usr/local/bin/gvfs-trash && chmod +x /usr/local/bin/gvfs-trash
 
 # Instala um pacote de senhas do windows ====================================================================================
-wget --no-check-certificate http://legacy.techsytes.com/rpm/fontesWindows.txz
+wget --no-check-certificate https://repo.techsytes.com/repository/static/fontesWindows.txz
 tar -xJf fontesWindows.txz
 chown -R root:root fontesWindows
 mv fontesWindows /usr/share/fonts/
@@ -180,6 +180,10 @@ rm -f fontesWindows.txz
 
 # Flathub ====================================================================================================================
 flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+
+# chronyd  ===================================================================================================================
+systemctl enable chronyd
+wget https://raw.githubusercontent.com/luisbrandao/tools/master/linuxInstall/rocky8/confs/chrony.conf -o /etc/chrony.conf
 
 # Java =======================================================================================================================
 #wget --no-check-certificate http://legacy.techsytes.com/rpm/jre.rpm
