@@ -1,0 +1,69 @@
+[techsytes-8-appstream]
+name=techsytes - 8 - appstream
+baseurl=https://repo.techsytes.com/repository/rocky-8-appstream
+enabled=1
+metadata_expire=6h
+gpgcheck=0
+
+[techsytes-8-baseos]
+name=techsytes - 8 - baseos
+baseurl=https://repo.techsytes.com/repository/rocky-8-baseos
+enabled=1
+metadata_expire=6h
+gpgcheck=0
+
+[techsytes-8-extra]
+name=techsytes - 8 - extra
+baseurl=https://repo.techsytes.com/repository/rocky-8-extra
+enabled=1
+metadata_expire=6h
+gpgcheck=0
+
+[techsytes-8-powertools]
+name=techsytes - 8 - powertools
+baseurl=https://repo.techsytes.com/repository/rocky-8-powertools
+enabled=1
+metadata_expire=6h
+gpgcheck=0
+
+[techsytes-8]
+name=techsytes - 8
+baseurl=https://repo.techsytes.com/repository/centos-8-techsytes
+enabled=1
+metadata_expire=6h
+gpgcheck=0
+
+[techsytes-8-kernel]
+name=techsytes - 8 - kernel
+baseurl=https://repo.techsytes.com/repository/rocky-8-techsytes-kernel
+enabled=0
+metadata_expire=6h
+gpgcheck=0
+
+[techsytes-8-epel]
+name=techsytes - 8 - epel
+baseurl=https://repo.techsytes.com/repository/rocky-8-epel
+enabled=1
+metadata_expire=6h
+gpgcheck=0
+
+[techsytes-8-epel-modular]
+name=techsytes - 8 - epel modular
+baseurl=https://repo.techsytes.com/repository/rocky-8-epel-modular
+enabled=1
+metadata_expire=6h
+gpgcheck=0
+
+[techsytes-8-rpmfusion-free]
+name=techsytes - 8 - rpmfusion-free
+baseurl=https://repo.techsytes.com/repository/rocky-8-rpmfusion-free/
+enabled=1
+metadata_expire=6h
+gpgcheck=0
+
+[techsytes-8-rpmfusion-nonfree]
+name=techsytes - 8 - rpmfusion-nonfree
+baseurl=https://repo.techsytes.com/repository/rocky-8-rpmfusion-nonfree/
+enabled=1
+metadata_expire=6h
+gpgcheck=0

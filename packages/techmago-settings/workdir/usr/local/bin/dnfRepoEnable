@@ -1,1 +1,59 @@
 #!/bin/bash
+dnf_local(){
+  sudo dnf config-manager --disable appstream baseos powertools extras
+  sudo dnf config-manager --disable epel epel-modular
+  sudo dnf config-manager --disable rpmfusion-free-updates rpmfusion-nonfree-updates
+
+  sudo dnf config-manager --enable techsytes-8-appstream techsytes-8-baseos techsytes-8-powertools techsytes-8-extra
+  sudo dnf config-manager --enable techsytes-8-epel techsytes-8-epel-modular
+  sudo dnf config-manager --enable techsytes-8-rpmfusion-free techsytes-8-rpmfusion-nonfree
+}
+
+dnf_externo(){
+  sudo dnf config-manager --disable techsytes-8-appstream techsytes-8-baseos techsytes-8-powertools techsytes-8-extra
+  sudo dnf config-manager --disable techsytes-8-epel techsytes-8-epel-modular
+  sudo dnf config-manager --disable techsytes-8-rpmfusion-free techsytes-8-rpmfusion-nonfree
+
+  sudo dnf config-manager --enable appstream baseos powertools extras
+  sudo dnf config-manager --enable epel epel-modular
+  sudo dnf config-manager --enable rpmfusion-free-updates rpmfusion-nonfree-updates
+}
+
+dnf_raven_on(){
+  sudo dnf config-manager --enable raven raven-modular raven-multimedia raven-extras
+}
+
+dnf_raven_off(){
+  sudo dnf config-manager --disable raven raven-modular raven-multimedia raven-extras
+}
+
+dnf_kernel_on(){
+  sudo dnf config-manager --enable techsytes-8-kernel
+}
+
+dnf_kernel_off(){
+  sudo dnf config-manager --disable techsytes-8-kernel
+}
+
+# ==============================================================================
+resp=$(dialog                                    \
+  --title 'dnf-config'                           \
+  --menu 'Escolha o perfil do dnf:'              \
+  --stdout                                       \
+  0 0 0                                          \
+  local       'Uso dentro da minha rede interna' \
+  externo     'Uso for da minha rede interna'    \
+  raven_on    'Habilita o raven'                 \
+  raven_off   'Desabilita o raven'               \
+  kernel_on   'Habilita o techsytes-kernel'      \
+  kernel_off  'Desabilita o techsytes-kernel')
+clear
+
+case "$resp" in
+     local) dnf_local ;;
+     externo) dnf_externo ;;
+     raven_on) dnf_raven_on ;;
+     raven_off) dnf_raven_on ;;
+     kernel_on) dnf_raven_on ;;
+     kernel_off) dnf_raven_on ;;
+esac

@@ -37,9 +37,10 @@ if ${local} ; then
   dnf config-manager --disable appstream baseos powertools extras
   dnf config-manager --disable epel epel-modular
   dnf config-manager --disable rpmfusion-free-updates rpmfusion-nonfree-updates
-	dnf config-manager --add-repo https://raw.githubusercontent.com/luisbrandao/tools/master/linuxInstall/rocky8/repos/rocky8-techsytes.repo
 else
-	dnf config-manager --disable extras
+  dnf config-manager --disable techsytes-8-appstream techsytes-8-baseos techsytes-8-powertools techsytes-8-extra
+  dnf config-manager --disable techsytes-8-epel techsytes-8-epel-modular
+  dnf config-manager --disable techsytes-8-rpmfusion-free techsytes-8-rpmfusion-nonfree
 fi
 
 dnf config-manager --add-repo https://negativo17.org/repos/epel-spotify.repo
@@ -48,6 +49,7 @@ dnf config-manager --add-repo https://raw.githubusercontent.com/luisbrandao/tool
 dnf config-manager --add-repo https://raw.githubusercontent.com/luisbrandao/tools/master/linuxInstall/rocky8/repos/google-chrome.repo
 dnf config-manager --add-repo https://raw.githubusercontent.com/luisbrandao/tools/master/linuxInstall/rocky8/repos/docker-ce.repo
 dnf config-manager --add-repo https://raw.githubusercontent.com/luisbrandao/tools/master/linuxInstall/rocky8/repos/slack.repo
+dnf config-manager --enable raven raven-modular raven-multimedia raven-extras
 
 rpm --import https://brave-browser-rpm-release.s3.brave.com/brave-core.asc
 echo 'repo_add_once="false"' > /etc/default/google-chrome
@@ -76,9 +78,6 @@ mv techmago.sh /etc/profile.d/
 # Remove programas inuteis ==================================================================================================
 dnf remove -y abrt* postfix crash empathy hypervkvpdy qemu-guest-agent spice-vdagent open-vm-tools gnome-boxes
 rpm -e --nodeps kernel-rx-headers
-
-# Executa a primeira atualização de sistema =================================================================================
-dnf update -y --skip-broken
 
 # Instala pacotes ===========================================================================================================
 # Internet
@@ -195,3 +194,7 @@ wget https://raw.githubusercontent.com/luisbrandao/tools/master/linuxInstall/roc
 
 #alternatives --config java
 #alternatives --config javaws
+
+# Atualiza o sistema =========================================================================================================
+dnf config-manager --disable raven raven-modular raven-multimedia raven-extras
+dnf update -y --nogpg --skip-broken --allowerasing
