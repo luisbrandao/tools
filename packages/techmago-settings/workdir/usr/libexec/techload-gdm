@@ -1,0 +1,15 @@
+#!/bin/bash
+# Dowload usefull extra shell extensons
+mkdir -p ~/.local/share/gnome-shell/extensions
+EXTENSIONS="BingWallpaper.txz Bluetooth-quick-connect.txz Ding.txz Minimize-to-tray.txz Tray-icons.txz"
+for extension in ${EXTENSIONS} ; do
+  wget --tries=10 --continue https://repo.techsytes.com/repository/static/rocky8-gnome/${extension}
+  tar -xvf ${extension} --directory ~/.local/share/gnome-shell/extensions
+  rm -f ${extension}
+done
+
+# Apply dconf
+cat /usr/share/agrotis/dconf.ini | dconf load /
+
+# Commit suicide
+# rm -f ~/.config/autostart/gdm-skell.desktop

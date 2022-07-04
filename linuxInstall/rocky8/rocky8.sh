@@ -46,7 +46,7 @@ dnf config-manager --add-repo https://negativo17.org/repos/epel-spotify.repo
 dnf config-manager --add-repo https://negativo17.org/repos/epel-steam.repo
 dnf config-manager --add-repo https://raw.githubusercontent.com/luisbrandao/tools/master/linuxInstall/rocky8/repos/brave.repo
 dnf config-manager --add-repo https://raw.githubusercontent.com/luisbrandao/tools/master/linuxInstall/rocky8/repos/google-chrome.repo
-dnf config-manager --add-repo https://raw.githubusercontent.com/luisbrandao/tools/master/linuxInstall/rocky8/repos/docker.repo
+dnf config-manager --add-repo https://raw.githubusercontent.com/luisbrandao/tools/master/linuxInstall/rocky8/repos/docker-ce.repo
 dnf config-manager --add-repo https://raw.githubusercontent.com/luisbrandao/tools/master/linuxInstall/rocky8/repos/slack.repo
 
 rpm --import https://brave-browser-rpm-release.s3.brave.com/brave-core.asc
@@ -70,7 +70,7 @@ systemctl stop lvm2-monitor.service
 systemctl stop kdump.service
 systemctl mask kdump.service
 # Da um boost no terminal ===================================================================================================
-wget --no-check-certificate https://raw.githubusercontent.com/luisbrandao/tools/master/techmago.sh
+wget --no-check-certificate https://raw.githubusercontent.com/luisbrandao/tools/master/linuxInstall/techmago.sh
 mv techmago.sh /etc/profile.d/
 
 # Remove programas inuteis ==================================================================================================
@@ -183,7 +183,7 @@ flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.f
 
 # chronyd  ===================================================================================================================
 systemctl enable chronyd
-wget https://raw.githubusercontent.com/luisbrandao/tools/master/linuxInstall/rocky8/confs/chrony.conf -o /etc/chrony.conf
+wget https://raw.githubusercontent.com/luisbrandao/tools/master/linuxInstall/rocky8/confs/chrony.conf -O /etc/chrony.conf
 
 # Java =======================================================================================================================
 #wget --no-check-certificate http://legacy.techsytes.com/rpm/jre.rpm

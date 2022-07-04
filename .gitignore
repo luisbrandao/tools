@@ -1,2 +1,3 @@
 list-*.*.*
 all.sh
+scripts/ssl/_tls/*
