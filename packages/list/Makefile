@@ -22,6 +22,7 @@ tarball: clean
 .PHONY: rpm
 rpm: tarball
 	rpmbuild -tb list-$(VERSION).tar.bz2
+	rm -rf list-$(VERSION).tar.bz2
 
 .PHONY: srpm
 srpm: tarball
