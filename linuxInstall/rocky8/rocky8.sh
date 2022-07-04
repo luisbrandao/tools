@@ -9,7 +9,7 @@ steam="yes"                                                            # Instala
 # ------------------------------------------------------[ Configuração ]-----------------------------------------------------
 # ---------------------------------------------------------------------------------------------------------------------------
 # Checa SELINUX =============================================================================================================
-if [ -f $(cat /etc/selinux/config | grep 'SELINUX=disabled') ] ; then
+if [ ! -n $(cat /etc/selinux/config | grep 'SELINUX=disabled') ] ; then
 	echo "SELINUX Ativado!"
 	echo "Deactive and reboot"
 	echo "vim /etc/selinux/config"
@@ -201,3 +201,13 @@ wget https://raw.githubusercontent.com/luisbrandao/tools/master/linuxInstall/roc
 # Atualiza o sistema =========================================================================================================
 dnf config-manager --disable raven raven-modular raven-multimedia raven-extras
 dnf update -y --nogpg --skip-broken --allowerasing
+
+
+# Checa limits =============================================================================================================
+if [ ! -n "$(cat /etc/security/limits.conf | grep 'hard nofile')" ] ; then
+  echo "Aumentado ulimit"
+  echo '* soft nofile 8192' >> /etc/security/limits.conf
+  echo '* hard nofile 524288' >> /etc/security/limits.conf
+else
+  echo "ulimit já configurado"
+fi
