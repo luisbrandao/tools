@@ -9,7 +9,7 @@ for extension in ${EXTENSIONS} ; do
 done
 
 # Apply dconf
-cat /usr/share/agrotis/dconf.ini | dconf load /
+cat /usr/share/techmago/dconf.ini | dconf load /
 
 # Commit suicide
-# rm -f ~/.config/autostart/gdm-skell.desktop
+rm -f ~/.config/autostart/gdm-skell.desktop
