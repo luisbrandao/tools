@@ -115,23 +115,26 @@ pacotes="${pacotes} net-tools mlocate psmisc hddtemp lm_sensors glances"
 pacotes="${pacotes} ntfs-3g ntfsprogs fuse-exfat exfat-utils"
 pacotes="${pacotes} wine winetricks flatpak stress"
 pacotes="${pacotes} xprop libwnck3 xwininfo xdotool"
-pacotes="${pacotes} java-latest-openjdk java-11-openjdk"
 
 if [ "${devel}" = yes ]; then
 	pacotes="${pacotes} unison sshfs byobu nfs-utils gparted"
 fi
 
 if [$(rpm -q gnome-session > /dev/null) $? -eq 0 ]; then
-  	pacotes="${pacotes} nautilus-dropbox nautilus-extensions evince-nautilus brasero-nautilus nextcloud-client-nautilus"
-  	pacotes="${pacotes} gnome-tweak-tool chrome-gnome-shell gnome-system-monitor"
-    pacotes="${pacotes} gnome-shell-extension-apps-menu gnome-shell-extension-top-icons gnome-shell-extension-places-menu gnome-shell-extension-window-list gnome-shell-extension-desktop-icons gnome-shell-extension-no-hot-corner gnome-shell-extension-launch-new-instance"
+  pacotes="${pacotes} nautilus-dropbox nautilus-extensions evince-nautilus brasero-nautilus nextcloud-client-nautilus"
+  pacotes="${pacotes} gnome-tweak-tool chrome-gnome-shell gnome-system-monitor"
+  pacotes="${pacotes} gnome-shell-extension-apps-menu gnome-shell-extension-top-icons gnome-shell-extension-places-menu gnome-shell-extension-window-list gnome-shell-extension-desktop-icons gnome-shell-extension-no-hot-corner gnome-shell-extension-launch-new-instance"
 fi
 dnf -y --nogpg --skip-broken --best --allowerasing install ${pacotes} ; recheck_retry "${pacotes}"
 
 
+Existe:
+ gnome-extensions-app (novo tweak tool)
+ gnome-shell-extension-desktop-icons.noarch gnome-shell-extension-top-icons.noarch gnome-shell-extension-apps-menu.noarch gnome-shell-extension-launch-new-instance.noarch gnome-shell-extension-places-menu.noarch
+
 # Escritorio
 pacotes="" # Limpa a variável                                                       # Inicia a variável
-pacotes="${pacotes} atom meld gimp kolourpaint geany terminator"
+pacotes="${pacotes} atom meld kolourpaint geany terminator"
 pacotes="${pacotes} libreoffice-langpack-pt-BR libreoffice-impress libreoffice-calc libreoffice-draw libreoffice-writer libreoffice-pdfimport"
 pacotes="${pacotes} ubuntu-family-fonts freetype-freeworld gnome-shell-extension-openweather"
 dnf -y --nogpg --skip-broken --best --allowerasing install ${pacotes} ; recheck_retry "${pacotes}"
