@@ -141,7 +141,7 @@ dnf -y --nogpg --skip-broken --best --allowerasing install ${pacotes} ; recheck_
 
 # Desenvolvimento
 if [ "${devel}" = yes ]; then
-  pacotes=""
+  pacotes=""exfat-utils.x86_64
   pacotes="${pacotes} java-11-openjdk java-11-openjdk-devel maven"
   pacotes="${pacotes} java-1.8.0-openjdk java-1.8.0-openjdk-devel"
   pacotes="${pacotes} gtk2-immodules mono-core mono-devel"
@@ -210,3 +210,6 @@ if [ ! -n "$(cat /etc/security/limits.conf | grep 'hard nofile')" ] ; then
 else
   echo "ulimit já configurado"
 fi
+
+grubby --update-kernel ALL --args audit=0
+grubby --update-kernel ALL --args selinux=0
