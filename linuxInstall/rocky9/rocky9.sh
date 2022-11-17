@@ -32,24 +32,24 @@ function recheck_retry {
 # Seta o timezone ===========================================================================================================
 ln -sf ../usr/share/zoneinfo/America/Sao_Paulo /etc/localtime
 
-# Configuração de repositórios ==============================================================================================
-if ${local} ; then
-  dnf config-manager --disable appstream baseos powertools extras
-  dnf config-manager --disable epel epel-modular
-  dnf config-manager --disable rpmfusion-free-updates rpmfusion-nonfree-updates
-else
-  dnf config-manager --disable techsytes-8-appstream techsytes-8-baseos techsytes-8-powertools techsytes-8-extra
-  dnf config-manager --disable techsytes-8-epel techsytes-8-epel-modular
-  dnf config-manager --disable techsytes-8-rpmfusion-free techsytes-8-rpmfusion-nonfree
-fi
-
 dnf config-manager --add-repo https://negativo17.org/repos/epel-spotify.repo
 dnf config-manager --add-repo https://negativo17.org/repos/epel-steam.repo
-dnf config-manager --add-repo https://raw.githubusercontent.com/luisbrandao/tools/master/linuxInstall/rocky8/repos/brave.repo
-dnf config-manager --add-repo https://raw.githubusercontent.com/luisbrandao/tools/master/linuxInstall/rocky8/repos/google-chrome.repo
-dnf config-manager --add-repo https://raw.githubusercontent.com/luisbrandao/tools/master/linuxInstall/rocky8/repos/docker-ce.repo
-dnf config-manager --add-repo https://raw.githubusercontent.com/luisbrandao/tools/master/linuxInstall/rocky8/repos/slack.repo
-dnf config-manager --enable raven raven-modular raven-multimedia raven-extras
+dnf config-manager --add-repo https://raw.githubusercontent.com/luisbrandao/tools/master/linuxInstall/rocky9/repos/brave.repo
+dnf config-manager --add-repo https://raw.githubusercontent.com/luisbrandao/tools/master/linuxInstall/rocky9/repos/google-chrome.repo
+dnf config-manager --add-repo https://raw.githubusercontent.com/luisbrandao/tools/master/linuxInstall/rocky9/repos/docker-ce.repo
+dnf config-manager --add-repo https://raw.githubusercontent.com/luisbrandao/tools/master/linuxInstall/rocky9/repos/slack.repo
+dnf config-manager --add-repo https://raw.githubusercontent.com/luisbrandao/tools/master/linuxInstall/rocky9/repos/rocky9-techsytes.repo
+
+Configuração de repositórios ==============================================================================================
+if ${local} ; then
+ dnf config-manager --disable appstream baseos crb extras
+ dnf config-manager --enable techsytes-9-appstream techsytes-9-baseos techsytes-9-extra techsytes-9-crb
+else
+ dnf config-manager --enable appstream baseos crb extras
+ dnf config-manager --disable techsytes-9-appstream techsytes-9-baseos techsytes-9-extra techsytes-9-crb
+fi
+
+
 
 rpm --import https://brave-browser-rpm-release.s3.brave.com/brave-core.asc
 echo 'repo_add_once="false"' > /etc/default/google-chrome
@@ -77,30 +77,30 @@ mv techmago.sh /etc/profile.d/
 
 # Remove programas inuteis ==================================================================================================
 dnf remove -y abrt* postfix crash empathy hypervkvpdy qemu-guest-agent spice-vdagent open-vm-tools gnome-boxes orca
-rpm -e --nodeps kernel-rx-headers
 
 # Instala pacotes ===========================================================================================================
 # Internet
 pacotes="" # Limpa a variável
-pacotes="${pacotes} transmission filezilla youtube-dl"
+pacotes="${pacotes} filezilla youtube-dl"
 pacotes="${pacotes} firefox google-chrome-stable brave-browser"
 pacotes="${pacotes} thunderbird"
-pacotes="${pacotes} remmina remmina-gnome-session remmina-plugins-rdp remmina-plugins-vnc remmina-plugins-www remmina-plugins-spice remmina-plugins-kwallet remmina-plugins-secret remmina-plugins-exec"
+pacotes="${pacotes} remmina remmina-plugins-exec remmina-plugins-rdp remmina-plugins-secret remmina-plugins-vnc remmina-plugins-www"
 dnf -y --nogpg --skip-broken --best --allowerasing install ${pacotes} ; recheck_retry "${pacotes}"
 
 # Multimidia
 pacotes="" # Limpa a variável
-pacotes="${pacotes} gstreamer1-libav gstreamer1 gstreamer-plugin-crystalhd gstreamer1-plugins-good PackageKit-gstreamer-plugin gstreamer1-plugins-bad-free gstreamer1-plugins-base gstreamer1-plugins-ugly gstreamer1-plugins-ugly-free gstreamer1-plugins-bad-freeworld gstreamer1-plugins-bad-nonfree gnome-video-effects"
-pacotes="${pacotes} mplayer smplayer rhythmbox cheese brasero spotify-client vlc"
-pacotes="${pacotes} ffmpeg"
+pacotes="${pacotes} gstreamer1 gstreamer1-libav gstreamer1-plugins-bad-free gstreamer1-plugins-bad-freeworld gstreamer1-plugins-base gstreamer1-plugins-base-devel gstreamer1-plugins-good gstreamer1-plugins-good-gtk gstreamer1-plugins-ugly gstreamer1-plugins-ugly-free gstreamer1-vaapi"
+pacotes="${pacotes} gnome-video-effects"
+pacotes="${pacotes} mplayer smplayer mpv ffmpeg vlc"
+pacotes="${pacotes} cheese brasero spotify-client"
 
 dnf -y --nogpg --skip-broken --best --allowerasing install ${pacotes} ; recheck_retry "${pacotes}"
 
 # Jogos
 pacotes="" # Limpa a variável
-if [ "${jogos}" = yes ]; then
-  pacotes="${pacotes} aisleriot apx five-or-more gnome-klotski gnome-mahjongg vitetris gnome-sudoku gnome-mines gnome-tetravex gnome-nibbles gnome-robots lightsoff"
-fi
+#if [ "${jogos}" = yes ]; then
+#  pacotes="${pacotes} aisleriot apx five-or-more gnome-klotski gnome-mahjongg vitetris gnome-sudoku gnome-mines gnome-tetravex gnome-nibbles gnome-robots #lightsoff"
+#fi
 if [ "${steam}" = yes ]; then
 	pacotes="${pacotes} steam"
 fi
@@ -110,33 +110,28 @@ dnf -y --nogpg --skip-broken --best --allowerasing install ${pacotes} ; recheck_
 pacotes="" # Limpa a variável
 pacotes="${pacotes} zlib unrar bzip2 xz-lzma-compat xz p7zip p7zip-plugins lzip lrzip cabextract pigz pxz pbzip2"
 pacotes="${pacotes} htop iotop iftop pydf bmon pydf inxi nload"
-pacotes="${pacotes} ntpdate fortune-mod gnome-disk-utility terminator bash-completion"
+pacotes="${pacotes} fortune-mod gnome-disk-utility terminator bash-completion"
 pacotes="${pacotes} net-tools mlocate psmisc hddtemp lm_sensors glances"
-pacotes="${pacotes} ntfs-3g ntfsprogs fuse-exfat exfat-utils"
-pacotes="${pacotes} wine winetricks flatpak stress"
+pacotes="${pacotes} ntfs-3g ntfsprogs fuse-exfat"
+pacotes="${pacotes} flatpak stress"
 pacotes="${pacotes} xprop libwnck3 xwininfo xdotool"
 
 if [ "${devel}" = yes ]; then
-	pacotes="${pacotes} unison sshfs byobu nfs-utils gparted"
+	pacotes="${pacotes} sshfs byobu nfs-utils gparted"
 fi
 
 if [$(rpm -q gnome-session > /dev/null) $? -eq 0 ]; then
   pacotes="${pacotes} nautilus-dropbox nautilus-extensions evince-nautilus brasero-nautilus nextcloud-client-nautilus"
-  pacotes="${pacotes} gnome-tweak-tool chrome-gnome-shell gnome-system-monitor"
-  pacotes="${pacotes} gnome-shell-extension-apps-menu gnome-shell-extension-top-icons gnome-shell-extension-places-menu gnome-shell-extension-window-list gnome-shell-extension-desktop-icons gnome-shell-extension-no-hot-corner gnome-shell-extension-launch-new-instance"
+  pacotes="${pacotes} gnome-tweaks gnome-extensions-app chrome-gnome-shell gnome-system-monitor"
+  pacotes="${pacotes} gnome-shell-extension-appindicator gnome-shell-extension-apps-menu gnome-shell-extension-background-logo gnome-shell-extension-common gnome-shell-extension-desktop-icons gnome-shell-extension-launch-new-instance gnome-shell-extension-panel-favorites gnome-shell-extension-places-menu gnome-shell-extension-top-icons gnome-shell-extension-user-theme gnome-shell-extension-vertical-workspaces gnome-shell-extension-window-list "
 fi
 dnf -y --nogpg --skip-broken --best --allowerasing install ${pacotes} ; recheck_retry "${pacotes}"
 
 
-Existe:
- gnome-extensions-app (novo tweak tool)
- gnome-shell-extension-desktop-icons.noarch gnome-shell-extension-top-icons.noarch gnome-shell-extension-apps-menu.noarch gnome-shell-extension-launch-new-instance.noarch gnome-shell-extension-places-menu.noarch
-
 # Escritorio
 pacotes="" # Limpa a variável                                                       # Inicia a variável
-pacotes="${pacotes} atom meld kolourpaint geany terminator"
+pacotes="${pacotes} pulsar meld kolourpaint geany terminator"
 pacotes="${pacotes} libreoffice-langpack-pt-BR libreoffice-impress libreoffice-calc libreoffice-draw libreoffice-writer libreoffice-pdfimport"
-pacotes="${pacotes} ubuntu-family-fonts freetype-freeworld gnome-shell-extension-openweather"
 dnf -y --nogpg --skip-broken --best --allowerasing install ${pacotes} ; recheck_retry "${pacotes}"
 
 # Broken
@@ -158,25 +153,24 @@ if [ "${devel}" = yes ]; then
   pacotes="${pacotes} libmodplug-devel libv4l-devel libva-devel openal-soft-devel opus-devel schroedinger-devel"
   pacotes="${pacotes} soxr-devel texinfo x265-devel ilbc-devel SDL-devel aalib-devel bzip2-devel alsa-lib-devel enca-devel faad2-devel"
   pacotes="${pacotes} ffmpeg-devel fribidi-devel giflib-devel gsm-devel gtk2-devel ladspa-devel lame-devel libXinerama-devel libXScrnSaver-devel"
-  pacotes="${pacotes} libXv-devel libXvMC-devel libass-devel libbs2b-devel libcaca-devel libcdio-paranoia-devel libdca-devel"
-  pacotes="${pacotes} libdv-devel libmpeg2-devel libmpg123-devel librtmp-devel libtheora-devel libvdpau-devel libvorbis-devel"
+  pacotes="${pacotes} libXv-devel libass-devel libbs2b-devel libcaca-devel libcdio-paranoia-devel libdca-devel"
+  pacotes="${pacotes} libdv-devel libmpg123-devel librtmp-devel libtheora-devel libvdpau-devel libvorbis-devel"
   pacotes="${pacotes} lirc-devel lzo-devel pulseaudio-libs-devel speex-devel x264-devel xvidcore-devel yasm dbus-glib-devel"
-  pacotes="${pacotes} gtk3-devel libcurl-devel libgpod-devel libnotify-devel nautilus-devel"
+  pacotes="${pacotes} gtk3-devel libcurl-devel libnotify-devel nautilus-devel"
   pacotes="${pacotes} qt5-linguist qt5-qtbase-devel qt5-qtscript-devel qt5-qttools-devel qt5-qtwebkit-devel qtsingleapplication-qt5-devel"
 
   dnf -y --nogpg --skip-broken --best --allowerasing install ${pacotes} ; recheck_retry "${pacotes}"
 fi
 
-
 # Hack para deletar arquivos no atom ========================================================================================
-echo '#!/usr/bin/env bash
-# GVFS updated and dropped gvfs-trash to gio, but Atom didnt update.
-# https://github.com/atom/tree-view/issues/1237
-/usr/bin/gio trash "$@"
-' | tee /usr/local/bin/gvfs-trash && chmod +x /usr/local/bin/gvfs-trash
+# echo '#!/usr/bin/env bash
+# # GVFS updated and dropped gvfs-trash to gio, but Atom didnt update.
+# # https://github.com/atom/tree-view/issues/1237
+# /usr/bin/gio trash "$@"
+# ' | tee /usr/local/bin/gvfs-trash && chmod +x /usr/local/bin/gvfs-trash
 
 # Instala um pacote de senhas do windows ====================================================================================
-wget --no-check-certificate https://repo.techsytes.com/repository/static/fontesWindows.txz
+wget https://repo.techsytes.com/repository/static/fontesWindows.txz
 tar -xJf fontesWindows.txz
 chown -R root:root fontesWindows
 mv fontesWindows /usr/share/fonts/
@@ -187,7 +181,7 @@ flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.f
 
 # chronyd  ===================================================================================================================
 systemctl enable chronyd
-wget https://raw.githubusercontent.com/luisbrandao/tools/master/linuxInstall/rocky8/confs/chrony.conf -O /etc/chrony.conf
+wget https://raw.githubusercontent.com/luisbrandao/tools/master/linuxInstall/rocky9/confs/chrony.conf -O /etc/chrony.conf
 
 # Java =======================================================================================================================
 #wget --no-check-certificate http://legacy.techsytes.com/rpm/jre.rpm

@@ -1,0 +1,34 @@
+[techsytes-9-appstream]
+name=techsytes - 9 - appstream
+baseurl=https://repo.techsytes.com/repository/rocky-9-appstream
+enabled=1
+metadata_expire=6h
+gpgcheck=0
+
+[techsytes-9-baseos]
+name=techsytes - 9 - baseos
+baseurl=https://repo.techsytes.com/repository/rocky-9-baseos
+enabled=1
+metadata_expire=6h
+gpgcheck=0
+
+[techsytes-9-extra]
+name=techsytes - 9 - extra
+baseurl=https://repo.techsytes.com/repository/rocky-9-extra
+enabled=1
+metadata_expire=6h
+gpgcheck=0
+
+[techsytes-9-crb]
+name=techsytes - 9 - crb
+baseurl=https://repo.techsytes.com/repository/rocky-9-crb
+enabled=1
+metadata_expire=6h
+gpgcheck=0
+
+[techsytes-9]
+name=techsytes - 9
+baseurl=https://repo.techsytes.com/repository/rhel-9-techsytes
+enabled=1
+metadata_expire=6h
+gpgcheck=0
