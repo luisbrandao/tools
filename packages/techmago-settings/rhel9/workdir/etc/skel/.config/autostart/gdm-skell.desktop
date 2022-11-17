@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Techmago initial gdm config
+Icon=preferences-system
+Exec=/usr/libexec/techload-gdm
+Terminal=true
+Type=Application
+StartupNotify=true
+Categories=GNOME;GTK;System;
+OnlyShowIn=GNOME;
+NoDisplay=false

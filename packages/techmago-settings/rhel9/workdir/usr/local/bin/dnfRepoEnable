@@ -1,0 +1,39 @@
+#!/bin/bash
+dnf_local(){
+  dnf config-manager --disable appstream baseos crb extras
+  dnf config-manager --enable techsytes-9-appstream techsytes-9-baseos techsytes-9-extra techsytes-9-crb
+}
+
+dnf_externo(){
+  dnf config-manager --enable appstream baseos crb extras
+  dnf config-manager --disable techsytes-9-appstream techsytes-9-baseos techsytes-9-extra techsytes-9-crb
+}
+
+dnf_raven_on(){
+  dnf config-manager --enable raven raven-modular raven-multimedia raven-extras
+}
+
+dnf_raven_off(){
+  dnf config-manager --disable raven raven-modular raven-multimedia raven-extras
+}
+
+# ==============================================================================
+resp=$(dialog                                    \
+  --title 'dnf-config'                           \
+  --menu 'Escolha o perfil do dnf:'              \
+  --stdout                                       \
+  0 0 0                                          \
+  local       'Uso dentro da minha rede interna' \
+  externo     'Uso for da minha rede interna'    \
+  raven_on    'Habilita o raven'                 \
+  raven_off   'Desabilita o raven'               )
+clear
+
+case "$resp" in
+     local) dnf_local ;;
+     externo) dnf_externo ;;
+     raven_on) dnf_raven_on ;;
+     raven_off) dnf_raven_off ;;
+     kernel_on) dnf_kernel_on ;;
+     kernel_off) dnf_kernel_off ;;
+esac
