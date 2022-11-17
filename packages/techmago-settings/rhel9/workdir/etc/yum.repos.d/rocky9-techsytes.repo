@@ -26,6 +26,13 @@ enabled=1
 metadata_expire=6h
 gpgcheck=0
 
+[techsytes-9-epel]
+name=techsytes - 9 - epel
+baseurl=https://repo.techsytes.com/repository/rocky-9-epel
+enabled=1
+metadata_expire=6h
+gpgcheck=0
+
 [techsytes-9]
 name=techsytes - 9
 baseurl=https://repo.techsytes.com/repository/rhel-9-techsytes

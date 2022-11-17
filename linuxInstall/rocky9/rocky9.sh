@@ -38,7 +38,6 @@ dnf config-manager --add-repo https://raw.githubusercontent.com/luisbrandao/tool
 dnf config-manager --add-repo https://raw.githubusercontent.com/luisbrandao/tools/master/linuxInstall/rocky9/repos/google-chrome.repo
 dnf config-manager --add-repo https://raw.githubusercontent.com/luisbrandao/tools/master/linuxInstall/rocky9/repos/docker-ce.repo
 dnf config-manager --add-repo https://raw.githubusercontent.com/luisbrandao/tools/master/linuxInstall/rocky9/repos/slack.repo
-dnf config-manager --add-repo https://raw.githubusercontent.com/luisbrandao/tools/master/linuxInstall/rocky9/repos/rocky9-techsytes.repo
 
 Configuração de repositórios ==============================================================================================
 if ${local} ; then
@@ -48,8 +47,6 @@ else
  dnf config-manager --enable appstream baseos crb extras
  dnf config-manager --disable techsytes-9-appstream techsytes-9-baseos techsytes-9-extra techsytes-9-crb
 fi
-
-
 
 rpm --import https://brave-browser-rpm-release.s3.brave.com/brave-core.asc
 echo 'repo_add_once="false"' > /etc/default/google-chrome
