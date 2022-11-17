@@ -1,7 +1,7 @@
 #!/bin/bash
 # Dowload usefull extra shell extensons
 mkdir -p ~/.local/share/gnome-shell/extensions
-EXTENSIONS="BingWallpaper.txz Bluetooth-quick-connect.txz Ding.txz Minimize-to-tray.txz Tray-icons.txz"
+EXTENSIONS="rhel9-BingWallpaper.txz rhel9-Bluetooth-quick-connect.txz rhel9-openweather.txz"
 for extension in ${EXTENSIONS} ; do
   wget --tries=10 --continue https://repo.techsytes.com/repository/static/rocky9-gnome/${extension}
   tar -xvf ${extension} --directory ~/.local/share/gnome-shell/extensions
