@@ -41,11 +41,13 @@ dnf config-manager --add-repo https://raw.githubusercontent.com/luisbrandao/tool
 
 Configuração de repositórios ==============================================================================================
 if ${local} ; then
- dnf config-manager --disable appstream baseos crb extras
- dnf config-manager --enable techsytes-9-appstream techsytes-9-baseos techsytes-9-extra techsytes-9-crb
+  dnf config-manager --disable appstream baseos crb extras
+  dnf config-manager --disable epel
+  dnf config-manager --enable techsytes-9-appstream techsytes-9-baseos techsytes-9-extra techsytes-9-crb techsytes-9-epel
 else
- dnf config-manager --enable appstream baseos crb extras
- dnf config-manager --disable techsytes-9-appstream techsytes-9-baseos techsytes-9-extra techsytes-9-crb
+  dnf config-manager --enable epel
+  dnf config-manager --enable appstream baseos crb extras
+  dnf config-manager --disable techsytes-9-appstream techsytes-9-baseos techsytes-9-extra techsytes-9-crb techsytes-9-epel
 fi
 
 rpm --import https://brave-browser-rpm-release.s3.brave.com/brave-core.asc
