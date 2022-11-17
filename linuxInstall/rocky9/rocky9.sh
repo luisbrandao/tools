@@ -195,8 +195,7 @@ wget https://raw.githubusercontent.com/luisbrandao/tools/master/linuxInstall/roc
 #alternatives --config javaws
 
 # Atualiza o sistema =========================================================================================================
-dnf config-manager --disable raven raven-modular raven-multimedia raven-extras
-dnf update -y --nogpg --skip-broken --allowerasing
+dnf update -y --nogpg --skip-broken --allowerasing --nobest
 
 
 # Checa limits =============================================================================================================
