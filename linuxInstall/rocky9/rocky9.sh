@@ -184,20 +184,8 @@ flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.f
 systemctl enable chronyd
 wget https://raw.githubusercontent.com/luisbrandao/tools/master/linuxInstall/rocky9/confs/chrony.conf -O /etc/chrony.conf
 
-# Java =======================================================================================================================
-#wget --no-check-certificate http://legacy.techsytes.com/rpm/jre.rpm
-#dnf -y install --nogpgcheck jre.rpm
-#rm -f jre.rpm
-
-#alternatives --install /usr/bin/java java /usr/java/latest/bin/java 20000
-#alternatives --install /usr/bin/javaws javaws /usr/java/latest/bin/javaws 20000
-
-#alternatives --config java
-#alternatives --config javaws
-
 # Atualiza o sistema =========================================================================================================
 dnf update -y --nogpg --skip-broken --allowerasing --nobest
-
 
 # Checa limits =============================================================================================================
 if [ ! -n "$(cat /etc/security/limits.conf | grep 'hard nofile')" ] ; then
