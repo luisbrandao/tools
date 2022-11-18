@@ -135,7 +135,7 @@ pacotes="${pacotes} pulsar meld kolourpaint geany terminator"
 pacotes="${pacotes} libreoffice-langpack-pt-BR libreoffice-impress libreoffice-calc libreoffice-draw libreoffice-writer libreoffice-pdfimport"
 dnf -y --nogpg --skip-broken --best --allowerasing install ${pacotes} ; recheck_retry "${pacotes}"
 # Pulsar icon fix
- cp /usr/share/icons/hicolor/0x0/apps/pulsar.png /usr/share/icons/hicolor/256x256/apps/
+cp /usr/share/icons/hicolor/0x0/apps/pulsar.png /usr/share/icons/hicolor/256x256/apps/
 
 
 # Broken
