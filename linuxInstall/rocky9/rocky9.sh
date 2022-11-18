@@ -33,7 +33,6 @@ function recheck_retry {
 ln -sf ../usr/share/zoneinfo/America/Sao_Paulo /etc/localtime
 
 # Configuração de repositórios ==============================================================================================
-dnf config-manager --add-repo https://raw.githubusercontent.com/luisbrandao/tools/master/packages/techmago-settings/rhel9/workdir/etc/yum.repos.d/rocky9-techsytes.repo
 dnf config-manager --add-repo https://negativo17.org/repos/epel-spotify.repo
 dnf config-manager --add-repo https://negativo17.org/repos/epel-steam.repo
 dnf config-manager --add-repo https://raw.githubusercontent.com/luisbrandao/tools/master/linuxInstall/rocky9/repos/brave.repo
@@ -41,7 +40,7 @@ dnf config-manager --add-repo https://raw.githubusercontent.com/luisbrandao/tool
 dnf config-manager --add-repo https://raw.githubusercontent.com/luisbrandao/tools/master/linuxInstall/rocky9/repos/docker-ce.repo
 dnf config-manager --add-repo https://raw.githubusercontent.com/luisbrandao/tools/master/linuxInstall/rocky9/repos/slack.repo
 
-dnf install -y epel-release rpmfusion-free-release  rpmfusion-nonfree-release techmago-settings
+dnf install -y epel-release rpmfusion-free-release  rpmfusion-nonfree-release
 
 if ${local} ; then
   dnf config-manager --disable appstream baseos crb extras
