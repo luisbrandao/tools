@@ -42,7 +42,7 @@ dnf config-manager --add-repo https://raw.githubusercontent.com/luisbrandao/tool
 
 dnf install -y epel-release rpmfusion-free-release  rpmfusion-nonfree-release techmago-settings
 
-Configuração de repositórios ==============================================================================================
+# Configuração de repositórios ==============================================================================================
 if ${local} ; then
   dnf config-manager --disable appstream baseos crb extras
   dnf config-manager --disable epel
