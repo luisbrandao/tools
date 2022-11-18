@@ -113,9 +113,14 @@ pacotes="${pacotes} flatpak stress"
 pacotes="${pacotes} xprop libwnck3 xwininfo xdotool"
 
 if [ "${devel}" = yes ]; then
-	pacotes="${pacotes} sshfs byobu nfs-utils gparted"
+	pacotes="${pacotes} sshfs byobu nfs-utils"
 fi
 
+dnf -y --nogpg --skip-broken --best --allowerasing install ${pacotes} ; recheck_retry "${pacotes}"
+
+# Gnome
+pacotes="" # Limpa a variável
+pacotes="${pacotes} gparted"
 if [$(rpm -q gnome-session > /dev/null) $? -eq 0 ]; then
   pacotes="${pacotes} nautilus-dropbox nautilus-extensions evince-nautilus brasero-nautilus nextcloud-client-nautilus"
   pacotes="${pacotes} gnome-tweaks gnome-extensions-app chrome-gnome-shell gnome-system-monitor"
