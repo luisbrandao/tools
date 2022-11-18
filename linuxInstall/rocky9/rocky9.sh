@@ -13,11 +13,11 @@ steam="yes"                                                            # Instala
 # 	echo "SELINUX Ativado!"
 # 	echo "Deactive and reboot"
 # 	echo "vim /etc/selinux/config"
-# 
+#
 # 	exit 1
 # fi
 
-# retenta instalar se necessário
+# retenta instalar se necessário (gambi)
 function recheck_retry {
   for file in ${1} ; do
     rpm -q $file > /dev/null
@@ -32,6 +32,7 @@ function recheck_retry {
 # Seta o timezone ===========================================================================================================
 ln -sf ../usr/share/zoneinfo/America/Sao_Paulo /etc/localtime
 
+# Configuração de repositórios ==============================================================================================
 dnf config-manager --add-repo https://raw.githubusercontent.com/luisbrandao/tools/master/packages/techmago-settings/rhel9/workdir/etc/yum.repos.d/rocky9-techsytes.repo
 dnf config-manager --add-repo https://negativo17.org/repos/epel-spotify.repo
 dnf config-manager --add-repo https://negativo17.org/repos/epel-steam.repo
@@ -42,7 +43,6 @@ dnf config-manager --add-repo https://raw.githubusercontent.com/luisbrandao/tool
 
 dnf install -y epel-release rpmfusion-free-release  rpmfusion-nonfree-release techmago-settings
 
-# Configuração de repositórios ==============================================================================================
 if ${local} ; then
   dnf config-manager --disable appstream baseos crb extras
   dnf config-manager --disable epel
