@@ -9,13 +9,13 @@ steam="yes"                                                            # Instala
 # ------------------------------------------------------[ Configuração ]-----------------------------------------------------
 # ---------------------------------------------------------------------------------------------------------------------------
 # Checa SELINUX =============================================================================================================
-if [ ! -n $(cat /etc/selinux/config | grep 'SELINUX=disabled') ] ; then
-	echo "SELINUX Ativado!"
-	echo "Deactive and reboot"
-	echo "vim /etc/selinux/config"
-
-	exit 1
-fi
+# if [ ! -n $(cat /etc/selinux/config | grep 'SELINUX=disabled') ] ; then
+# 	echo "SELINUX Ativado!"
+# 	echo "Deactive and reboot"
+# 	echo "vim /etc/selinux/config"
+# 
+# 	exit 1
+# fi
 
 # retenta instalar se necessário
 function recheck_retry {
@@ -61,17 +61,11 @@ dnf makecache
 
 # Desabilita serviços desnecessários ========================================================================================
 # systemctl disable wpa_supplicant.service # Notebook?
-systemctl stop auditd.service
 systemctl mask auditd.service
-systemctl stop ModemManager.service
 systemctl mask ModemManager.service
 systemctl disable firewalld.service
-systemctl stop firewalld.service
 systemctl disable cryptsetup.target
-systemctl stop cryptsetup.target
 systemctl disable lvm2-monitor.service
-systemctl stop lvm2-monitor.service
-systemctl stop kdump.service
 systemctl mask kdump.service
 # Da um boost no terminal ===================================================================================================
 wget --no-check-certificate https://raw.githubusercontent.com/luisbrandao/tools/master/linuxInstall/techmago.sh
