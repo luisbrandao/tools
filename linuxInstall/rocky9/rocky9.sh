@@ -32,12 +32,15 @@ function recheck_retry {
 # Seta o timezone ===========================================================================================================
 ln -sf ../usr/share/zoneinfo/America/Sao_Paulo /etc/localtime
 
+dnf config-manager --add-repo https://raw.githubusercontent.com/luisbrandao/tools/master/packages/techmago-settings/rhel9/workdir/etc/yum.repos.d/rocky9-techsytes.repo
 dnf config-manager --add-repo https://negativo17.org/repos/epel-spotify.repo
 dnf config-manager --add-repo https://negativo17.org/repos/epel-steam.repo
 dnf config-manager --add-repo https://raw.githubusercontent.com/luisbrandao/tools/master/linuxInstall/rocky9/repos/brave.repo
 dnf config-manager --add-repo https://raw.githubusercontent.com/luisbrandao/tools/master/linuxInstall/rocky9/repos/google-chrome.repo
 dnf config-manager --add-repo https://raw.githubusercontent.com/luisbrandao/tools/master/linuxInstall/rocky9/repos/docker-ce.repo
 dnf config-manager --add-repo https://raw.githubusercontent.com/luisbrandao/tools/master/linuxInstall/rocky9/repos/slack.repo
+
+dnf install -y epel-release rpmfusion-free-release  rpmfusion-nonfree-release techmago-settings
 
 Configuração de repositórios ==============================================================================================
 if ${local} ; then
@@ -82,7 +85,7 @@ dnf remove -y abrt* postfix crash empathy hypervkvpdy qemu-guest-agent spice-vda
 pacotes="" # Limpa a variável
 pacotes="${pacotes} filezilla youtube-dl"
 pacotes="${pacotes} firefox google-chrome-stable brave-browser"
-pacotes="${pacotes} thunderbird"
+pacotes="${pacotes} thunderbird wget curl"
 pacotes="${pacotes} remmina remmina-plugins-exec remmina-plugins-rdp remmina-plugins-secret remmina-plugins-vnc remmina-plugins-www"
 dnf -y --nogpg --skip-broken --best --allowerasing install ${pacotes} ; recheck_retry "${pacotes}"
 
