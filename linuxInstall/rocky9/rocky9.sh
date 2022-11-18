@@ -71,7 +71,7 @@ wget --no-check-certificate https://raw.githubusercontent.com/luisbrandao/tools/
 mv techmago.sh /etc/profile.d/
 
 # Remove programas inuteis ==================================================================================================
-dnf remove -y abrt* postfix crash empathy hypervkvpdy qemu-guest-agent spice-vdagent open-vm-tools gnome-boxes orca
+dnf remove -y abrt* postfix crash empathy hypervkvpdy qemu-guest-agent spice-vdagent open-vm-tools gnome-boxes orca evolution-help evolution evolution-ews evolution-ews-langpacks
 
 # Instala pacotes ===========================================================================================================
 # Internet
