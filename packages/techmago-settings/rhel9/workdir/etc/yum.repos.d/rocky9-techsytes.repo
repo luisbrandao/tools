@@ -39,3 +39,11 @@ baseurl=https://repo.techsytes.com/repository/rhel-9-techsytes
 enabled=1
 metadata_expire=6h
 gpgcheck=0
+
+[techsytes-9-cuda]
+name=techsytes - 9 - cuda
+baseurl=https://repo.techsytes.com/repository/rocky-9-cuda
+enabled=1
+metadata_expire=6h
+gpgcheck=1
+gpgkey=https://developer.download.nvidia.com/compute/cuda/repos/rhel9/x86_64/D42D0685.pub
