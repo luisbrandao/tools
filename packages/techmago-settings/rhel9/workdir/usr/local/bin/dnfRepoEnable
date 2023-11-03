@@ -1,20 +1,38 @@
 #!/bin/bash
 dnf_local(){
-  dnf config-manager --disable appstream baseos crb extras
-  dnf config-manager --enable techsytes-9-appstream techsytes-9-baseos techsytes-9-extra techsytes-9-crb
+  dnf config-manager --disable appstream
+  dnf config-manager --disable baseos
+  dnf config-manager --disable crb
+  dnf config-manager --disable extras
+  dnf config-manager --enable techsytes-9-appstream
+  dnf config-manager --enable techsytes-9-baseos
+  dnf config-manager --enable techsytes-9-extra
+  dnf config-manager --enable techsytes-9-crb
 }
 
 dnf_externo(){
-  dnf config-manager --enable appstream baseos crb extras
-  dnf config-manager --disable techsytes-9-appstream techsytes-9-baseos techsytes-9-extra techsytes-9-crb
+  dnf config-manager --enable appstream
+  dnf config-manager --enable baseos
+  dnf config-manager --enable crb
+  dnf config-manager --enable extras
+  dnf config-manager --disable techsytes-9-appstream
+  dnf config-manager --disable techsytes-9-baseos
+  dnf config-manager --disable techsytes-9-extra
+  dnf config-manager --disable techsytes-9-crb
 }
 
 dnf_raven_on(){
-  dnf config-manager --enable raven raven-modular raven-multimedia raven-extras
+  dnf config-manager --enable raven
+  dnf config-manager --enable raven-modular
+  dnf config-manager --enable raven-multimedia
+  dnf config-manager --enable raven-extras
 }
 
 dnf_raven_off(){
-  dnf config-manager --disable raven raven-modular raven-multimedia raven-extras
+  dnf config-manager --disable raven
+  dnf config-manager --disable raven-modular
+  dnf config-manager --disable raven-multimedia
+  dnf config-manager --disable raven-extras
 }
 
 # ==============================================================================
