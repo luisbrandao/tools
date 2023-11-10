@@ -90,10 +90,6 @@ def main(HOSTED_ZONE, DOMAIN_NAME):
         logger.debug('DNS response (%s) and public IP (%s) are the same, nothing to do' % (resolved_ip, current_ip))
         return
 
-    hosted_zone_id = 'YOUR_HOSTED_ZONE_ID'
-    domain_name = 'example.com'
-    new_ip = 'NEW_IP_ADDRESS'
-
     change_route53_a_record(HOSTED_ZONE, DOMAIN_NAME, current_ip)
 
 if __name__ == '__main__':
