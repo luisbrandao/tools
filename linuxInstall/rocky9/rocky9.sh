@@ -84,6 +84,7 @@ pacotes="${pacotes} filezilla youtube-dl"
 pacotes="${pacotes} firefox google-chrome-stable brave-browser"
 pacotes="${pacotes} thunderbird wget curl"
 pacotes="${pacotes} remmina remmina-plugins-exec remmina-plugins-rdp remmina-plugins-secret remmina-plugins-vnc remmina-plugins-www"
+pacotes="${pacotes} NetworkManager-openvpn-gnome NetworkManager-openvpn"
 dnf -y --nogpg --skip-broken --best --allowerasing install ${pacotes} ; recheck_retry "${pacotes}"
 
 # Multimidia
