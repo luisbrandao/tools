@@ -4,10 +4,12 @@ dnf_local(){
   dnf config-manager --disable baseos
   dnf config-manager --disable crb
   dnf config-manager --disable extras
+  dnf config-manager --disable cuda-rhel9-x86_64
   dnf config-manager --enable techsytes-9-appstream
   dnf config-manager --enable techsytes-9-baseos
   dnf config-manager --enable techsytes-9-extra
   dnf config-manager --enable techsytes-9-crb
+  dnf config-manager --enable techsytes-9-cuda
 }
 
 dnf_externo(){
@@ -15,10 +17,12 @@ dnf_externo(){
   dnf config-manager --enable baseos
   dnf config-manager --enable crb
   dnf config-manager --enable extras
+  dnf config-manager --enable cuda-rhel9-x86_64
   dnf config-manager --disable techsytes-9-appstream
   dnf config-manager --disable techsytes-9-baseos
   dnf config-manager --disable techsytes-9-extra
   dnf config-manager --disable techsytes-9-crb
+  dnf config-manager --disable techsytes-9-cuda
 }
 
 dnf_raven_on(){
@@ -48,10 +52,8 @@ resp=$(dialog                                    \
 clear
 
 case "$resp" in
-     local) dnf_local ;;
-     externo) dnf_externo ;;
-     raven_on) dnf_raven_on ;;
-     raven_off) dnf_raven_off ;;
-     kernel_on) dnf_kernel_on ;;
-     kernel_off) dnf_kernel_off ;;
+  local) dnf_local ;;
+  externo) dnf_externo ;;
+  raven_on) dnf_raven_on ;;
+  raven_off) dnf_raven_off ;;
 esac
