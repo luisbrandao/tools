@@ -5,11 +5,13 @@ dnf_local(){
   dnf config-manager --disable crb
   dnf config-manager --disable extras
   dnf config-manager --disable cuda-rhel9-x86_64
+  dnf config-manager --disable epel
   dnf config-manager --enable techsytes-9-appstream
   dnf config-manager --enable techsytes-9-baseos
   dnf config-manager --enable techsytes-9-extra
   dnf config-manager --enable techsytes-9-crb
   dnf config-manager --enable techsytes-9-cuda
+  dnf config-manager --enable techsytes-9-epel
 }
 
 dnf_externo(){
@@ -18,11 +20,13 @@ dnf_externo(){
   dnf config-manager --enable crb
   dnf config-manager --enable extras
   dnf config-manager --enable cuda-rhel9-x86_64
+  dnf config-manager --enable epel
   dnf config-manager --disable techsytes-9-appstream
   dnf config-manager --disable techsytes-9-baseos
   dnf config-manager --disable techsytes-9-extra
   dnf config-manager --disable techsytes-9-crb
   dnf config-manager --disable techsytes-9-cuda
+  dnf config-manager --disable techsytes-9-epel
 }
 
 dnf_raven_on(){
