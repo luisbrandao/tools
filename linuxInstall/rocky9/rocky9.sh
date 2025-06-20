@@ -2,7 +2,6 @@
 # ---------------------------------------------------------------------------------------------------------------------------
 # ------------------------------------------------------[ Configuração ]-----------------------------------------------------
 repos=""                                                               # Inicia a variável
-local="true"                                                           # Inicia a variável
 devel="yes"                                                            # Instala coisas do pseudogrupo "devel"
 jogos="yes"                                                            # Instala os jogos básicos
 steam="yes"                                                            # Instala a steam
