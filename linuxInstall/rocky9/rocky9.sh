@@ -60,9 +60,6 @@ systemctl disable firewalld.service
 systemctl disable cryptsetup.target
 systemctl disable lvm2-monitor.service
 systemctl mask kdump.service
-# Da um boost no terminal ===================================================================================================
-wget --no-check-certificate https://raw.githubusercontent.com/luisbrandao/tools/master/linuxInstall/techmago.sh
-mv techmago.sh /etc/profile.d/
 
 # Remove programas inuteis ==================================================================================================
 dnf remove -y abrt* postfix crash empathy hypervkvpdy qemu-guest-agent spice-vdagent open-vm-tools gnome-boxes orca evolution-help evolution evolution-ews evolution-ews-langpacks
