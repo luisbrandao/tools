@@ -14,7 +14,6 @@ try:
 except ImportError:                 # fallback banner if tqdm missing
     tqdm = None
 
-
 SEARCH = "/service/rest/v1/search/assets"
 
 def collect(session, base, repo, pattern, debug=False):
@@ -29,7 +28,10 @@ def collect(session, base, repo, pattern, debug=False):
             print("DEBUG search:", r.url, "→", r.status_code)
         r.raise_for_status()
         data = r.json()
-        items.extend(data.get("items", []))
+        for itm in data.get("items", []):
+            # keep only those whose path contains the pattern (case‑insensitive)
+            if pattern.lower() in itm["path"].lower():
+                items.append(itm)
         token = data.get("continuationToken")
         if not token:
             break
@@ -95,9 +97,9 @@ def main():
         print("No assets matched the pattern.")
         return 0
 
-    print(f"Found {len(items)} asset(s):")
     for i in items:
         print(" •", i["path"])
+    print(f"Found {len(items)} asset(s).")
 
     if not args.apply and not args.yes:
         return 0          # listing mode only
