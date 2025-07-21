@@ -50,7 +50,7 @@ def delete_assets(session, assets):
         ok = resp.ok
         msg = f"{'✔' if ok else '✖'} {idx:>4}/{total}  {url}"
         if progress:
-            progress.set_description(msg[:80])
+            progress.set_description(msg[:140])
             progress.update(1)
         else:
             print(msg)
