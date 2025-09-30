@@ -11,8 +11,8 @@ shopt -s checkwinsize
 readonly HISTCONTROL=ignoredups
 
 # for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
-readonly HISTFILESIZE="20000"
-readonly HISTSIZE="20000"
+readonly HISTFILESIZE="50000"
+readonly HISTSIZE="50000"
 
 # registra a data juntamente com cada comando
 HISTTIMEFORMAT="+%Y%m%d-%T "
@@ -20,7 +20,7 @@ readonly HISTFILE="${HOME}/.bash_history"
 
 # append to the history file, don't overwrite it
 shopt -s histappend
-PROMPT_COMMAND='history -a'
+PROMPT_COMMAND='history -a; history -n'
 export HISTTIMEFORMAT HISTFILE HISTFILESIZE HISTSIZE HISTCONTROL
 
 # Colors ========================================================================================
