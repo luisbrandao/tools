@@ -6,6 +6,15 @@
 # update the values of LINES and COLUMNS.
 shopt -s checkwinsize
 
+function ifaces() {
+  for iface in $(ls --color=never /sys/class/net | grep -Ev '^(lo|veth)') ; do
+      echo "== ${iface} ======"
+      ethtool ${iface} | grep "Link detected"
+      ethtool ${iface} | grep "Speed"
+      ifconfig ${iface} | grep "inet "
+  done
+}
+
 # History control ==================================================================================
 # don't put duplicate lines in the history. See bash(1) for more options
 readonly HISTCONTROL=ignoredups
