@@ -19,7 +19,6 @@ STATE_FILE = "/var/lib/dnsmasq_stats/last_position"
 INODE_FILE = "/var/lib/dnsmasq_stats/last_inode"
 
 
-
 # Regex to match query lines
 # Example: Oct  4 00:23:11 dnsmasq[393822]: query[A] accounts.google.com from 192.168.0.78
 QUERY_PATTERN = re.compile(r'query\[(A|AAAA)\]\s+(\S+)\s+from')
@@ -81,7 +80,7 @@ def parse_new_logs(last_position, last_inode):
         current_inode = file_stat.st_ino
         
         # Check if log was rotated (different inode or smaller size)
-        if current_inode != last_inode or file_size < last_position:
+        if (current_inode != last_inode) or (file_size < last_position):
             timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             print(f"[{timestamp}] Log rotation detected, starting from beginning")
             last_position = 0
