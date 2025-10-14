@@ -14,8 +14,11 @@ from datetime import datetime
 # Configuration
 LOG_FILE = "/var/log/dnsmasq.log"
 DB_FILE = "/var/lib/dnsmasq_stats/queries.db"
-STATE_FILE = "/var/lib/dnsmasq_stats/last_position"
 PROM_FILE = "/var/lib/node_exporter/textfile_collector/dnsmasq_domains.prom"
+STATE_FILE = "/var/lib/dnsmasq_stats/last_position"
+INODE_FILE = "/var/lib/dnsmasq_stats/last_inode"
+
+
 
 # Regex to match query lines
 # Example: Oct  4 00:23:11 dnsmasq[393822]: query[A] accounts.google.com from 192.168.0.78
@@ -47,17 +50,42 @@ def get_last_position():
     return 0
 
 
+def get_last_inode():
+    """Get the last known inode of the log file"""
+    if os.path.exists(INODE_FILE):
+        with open(INODE_FILE, 'r') as f:
+            return int(f.read().strip())
+    return 0
+
+
 def save_last_position(position):
     """Save the current read position"""
     with open(STATE_FILE, 'w') as f:
         f.write(str(position))
 
 
-def parse_new_logs(last_position):
+def save_last_inode(inode):
+    """Save the current inode"""
+    with open(INODE_FILE, 'w') as f:
+        f.write(str(inode))
+
+
+def parse_new_logs(last_position, last_inode):
     """Parse log file from last position and count queries"""
     domain_counts = {}
     
     try:
+        # Get current file stats
+        file_stat = os.stat(LOG_FILE)
+        file_size = file_stat.st_size
+        current_inode = file_stat.st_ino
+        
+        # Check if log was rotated (different inode or smaller size)
+        if current_inode != last_inode or file_size < last_position:
+            timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            print(f"[{timestamp}] Log rotation detected, starting from beginning")
+            last_position = 0
+        
         with open(LOG_FILE, 'r') as f:
             # Seek to last position
             f.seek(last_position)
@@ -75,10 +103,11 @@ def parse_new_logs(last_position):
             current_position = f.tell()
             
     except FileNotFoundError:
-        print(f"Log file not found: {LOG_FILE}", file=sys.stderr)
-        return domain_counts, last_position
+        timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        print(f"[{timestamp}] Log file not found: {LOG_FILE}", file=sys.stderr)
+        return domain_counts, last_position, last_inode
     
-    return domain_counts, current_position
+    return domain_counts, current_position, current_inode
 
 
 def update_database(conn, domain_counts):
@@ -121,14 +150,17 @@ def export_to_prometheus(conn):
 
 def main():
     """Main execution"""
+    from datetime import datetime
+    
     # Initialize database
     conn = init_db()
     
-    # Get last position
+    # Get last position and inode
     last_position = get_last_position()
+    last_inode = get_last_inode()
     
     # Parse new log entries
-    domain_counts, new_position = parse_new_logs(last_position)
+    domain_counts, new_position, new_inode = parse_new_logs(last_position, last_inode)
     
     # Update database
     if domain_counts:
@@ -139,8 +171,9 @@ def main():
         timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         print(f"[{timestamp}] No new queries to process")
     
-    # Save new position
+    # Save new position and inode
     save_last_position(new_position)
+    save_last_inode(new_inode)
     
     # Export to Prometheus
     export_to_prometheus(conn)
