@@ -59,6 +59,11 @@ if [ -x /usr/bin/dircolors ]; then
 fi
 
 # Aliases ========================================================================================
+if [ -x /usr/local/bin/day ]; then
+        day
+        echo ""
+fi
+
 if [ -x /usr/bin/fortune ]; then
         echo "Fortune:"
         fortune

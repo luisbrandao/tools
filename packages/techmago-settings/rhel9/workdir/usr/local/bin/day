@@ -1,0 +1,35 @@
+#!/usr/bin/env python3
+import datetime
+import calendar
+
+today = datetime.date.today()
+year = today.year
+month = today.month
+day = today.day
+
+# Total days in current month
+_, total_days = calendar.monthrange(year, month)
+
+# Day of year and total days in year
+day_of_year = today.timetuple().tm_yday
+total_days_in_year = 366 if calendar.isleap(year) else 365
+
+# First line: Date in "2025-12-31-Wed" format
+print(today.strftime("%Y-%m-%d-%a"))
+
+# Bar settings
+bar_length = 20
+label_width = 10  # "September" is the longest month name (9 chars)
+
+# Month progress
+month_name = today.strftime("%B")
+month_percent = int(round(day * 100 / total_days))
+filled = int(round(month_percent * bar_length / 100))
+bar_month = '#' * filled + ' ' * (bar_length - filled)
+print(f"{month_name:<{label_width}} [{bar_month}] {month_percent:>3}% ({day}/{total_days})")
+
+# Year progress
+year_percent = int(round(day_of_year * 100 / total_days_in_year))
+filled = int(round(year_percent * bar_length / 100))
+bar_year = '#' * filled + ' ' * (bar_length - filled)
+print(f"{year:<{label_width}} [{bar_year}] {year_percent:>3}% ({day_of_year}/{total_days_in_year})")
