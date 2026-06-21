@@ -1,72 +1,126 @@
 # Tools
-Assortment of random scripts
 
-# list
+A personal collection of DevOps, sysadmin, and cloud-automation scripts — covering Linux post-install provisioning, AWS operations, CI/CD helpers, monitoring, SSL/PKI, Nexus Repository Manager maintenance, and RPM packaging.
 
-This script list all your AWS EC2 instances, and format the output in a nice table:
+## Repository layout
 
-```sh
+```
+tools/
+├── linuxInstall/      # Post-install setup scripts for various distros
+├── packages/          # RPM-packaged utilities (list, kubetail, techmago-settings)
+└── scripts/           # Standalone utility scripts
+    ├── aws/           # AWS automation (EC2, RDS, Route53, CodeDeploy)
+    ├── nexus-repository/  # Nexus artifact cleanup tools
+    └── ssl/           # OpenSSL PKI generation helpers
+```
+
+---
+
+## linuxInstall/
+
+Automated post-install scripts that configure third-party repositories, install desktop/media/dev packages, set the timezone to `America/Sao_Paulo`, and disable unneeded services.
+
+| Distro family | Scripts |
+|---|---|
+| **Rocky Linux** | `rocky8/rocky8.sh`, `rocky9/rocky9.sh`, `rocky10/rocky10.sh` |
+| **CentOS** | `centos/centos7.sh`, `centos/centos8.sh` |
+| **Fedora** | `fedora/fedoraInstall18.sh` through `fedoraInstall34.sh` |
+
+Each Rocky directory also ships repo definitions (`repos/`) and config files (`confs/chrony.conf`). The Rocky 9/10 variants add repos for Docker CE, Google Chrome, Brave, Slack, TeamViewer, VirtualBox, CUDA, and Kubernetes.
+
+---
+
+## scripts/
+
+### General utilities
+
+| Script | Language | Purpose |
+|---|---|---|
+| `backupmysql.sh` | bash | Per-database `mysqldump` with selectable compression (gzip/xz/pigz/pxz/lrzip) and retention |
+| `bitbucketClone.sh` | bash | Clones all repos from Bitbucket projects via the 2.0 API |
+| `checkMemory.sh` | sh | Reports real RAM usage (excluding buffers/cache) — originally for Cacti |
+| `custom.php` | php | Curl-friendly HTTP health check returning memory %, load average, core count, uptime |
+| `dnsmasq_stats.py` | python | Parses dnsmasq logs into SQLite and exports Prometheus textfile metrics |
+| `fpm.sh` | bash | Builds a Solr RPM from a directory tree using `fpm` |
+| `ftpython.py` | python | Simple HTTP server with file upload (Python 2 era) |
+| `github-repolist.php` | php | Lists all repos in a GitHub organization (for batch cloning) |
+| `gitlab-autoclone.sh` | bash | Clones all repos in a GitLab group using an API token |
+| `intCredCheck.rb` | ruby | Validates tenant credentials against an Agrotis platform + SAP Service Layer |
+| `kubeMEMextract.sh` | bash | Summarizes CPU/memory requests across all Kubernetes nodes |
+| `luksMount.sh` | bash | Opens/closes LUKS-encrypted volumes with a random mapper name |
+| `recriaBranch.rb` | ruby | Deletes and recreates GitLab branches (with safety guards on `master`/`deploy`) |
+| `redisTestSource.py` | python | Inspects a Redis source — counts keys by type and prints TTLs |
+| `redisTransfer.py` | python | Copies all keys (string/hash/set, preserving TTL) from one Redis to another |
+| `rpmMassRebuild.sh` | bash | Loops over SRPMs, installs build deps, and rebuilds them |
+| `solr.py` | python | Lists Solr cores, item counts, and triggers data imports |
+| `urlmontor.py` | python | Hash-based website change monitor (compares SHA-224 of page content) |
+| `weblogicDeploy.py` | python (WLST) | WebLogic deployment automation: undeploy existing app, then deploy & start |
+
+### scripts/aws/
+
+| Script | Language | Purpose |
+|---|---|---|
+| `backupimages.rb` | ruby | Creates AMI images of running EC2 instances tagged `Backup=True` |
+| `ipupdate.py2` | python 2 | Dynamic DNS updater for Route53 (uses `boto` v2) |
+| `ipupdate.py3` | python 3 | Same as above, modernized (uses `boto3`, `dnspython`, `click`) |
+| `recriaBanco.sh` | bash | Clones an RDS instance to a new DB instance (with size validation) |
+| `waitDeploy.sh` | bash | Polls an AWS CodeDeploy deployment until completion — designed for Jenkins pipeline steps |
+
+### scripts/nexus-repository/
+
+Tools to list and delete artifacts from Sonatype Nexus Repository Manager (REST API v1). All prompt for confirmation before deleting.
+
+| Script | Format | Notes |
+|---|---|---|
+| `nexusRMgeneric.py` | any | Generic path-pattern search & delete with `tqdm` progress |
+| `nexusRMversionDocker.sh` | docker | Delete Docker image versions by SHA-256 manifest |
+| `nexusRMversionDockerAuto.py` | docker | Auto-keep last N versions, delete the rest |
+| `nexusRMversionMVN.sh` | maven | Delete Maven artifacts by group + version glob |
+| `nexusRMversionStatic.sh` | static | Delete static `.txz` artifacts by module + version |
+| `nexusRMversionStaticAuto.sh` | static | Same, but auto-keeps the 5 newest |
+
+### scripts/ssl/
+
+Zsh scripts for generating a local PKI with OpenSSL:
+
+| Script | Purpose |
+|---|---|
+| `generateROOT.zsh` | Generate a self-signed root CA (4096-bit, 7300 days) |
+| `generateSERVICE.zsh` | Generate a service key/CSR and sign it with an existing root CA |
+| `generateALL.zsh` | One-shot: generate root CA + service certificate |
+| `openssl.cnf` | Shared OpenSSL config |
+| `readme.md` | Verification commands (`openssl x509`, `openssl verify`, etc.) |
+
+---
+
+## packages/
+
+RPM-packaged utilities, each with a `Makefile` supporting `make rpm` / `make srpm`.
+
+### list
+
+Python 3 CLI (boto3 + `terminaltables` + `click`) that lists AWS EC2 instances in a formatted table:
+
+```
 +-----------------------+----------------+----------------+------------+---------+---------------------------+
 | Name                  | Private IP     | Public IP      | Type       | State   | Launch Time               |
 +-----------------------+----------------+----------------+------------+---------+---------------------------+
 | RentOS 1.0.10         | 192.168.4.134  | None           | t2.micro   | running | 2017-08-25 14:44:33+00:00 |
-| evaluations           | 192.168.4.165  | None           | t2.micro   | running | 2016-05-18 16:11:53+00:00 |
-| prod-mongodb          | 192.168.4.124  | None           | t2.large   | running | 2016-12-27 11:44:13+00:00 |
-| prod-monyog           | 192.168.4.202  | None           | t2.large   | running | 2016-09-16 14:22:57+00:00 |
 +-----------------------+----------------+----------------+------------+---------+---------------------------+
 ```
 
-# waitDeploy.sh
+Options: `-c/--column` to select columns, `-r/--region` to pick an AWS region.
 
-This shell was desingned to run inside a jenkins step: it receive a json (which is the return of the AWS code deploy cli call) and then monitors the code deploy until it finishes. If the deploy fails, jenkins will receive the failure.
+### kubetail
 
-```sh
-stage("Deploy") {
-sh "aws deploy create-deployment --region ${appRegion} " +
-  "--application-name ${appName} " +
-  "--deployment-group ${appEnv} " +
-  "--revision '{" +
-  "  \"revisionType\": \"S3\"," +
-  "  \"s3Location\": {" +
-  "    \"bucket\": \"${appBucket}\"," +
-  "    \"key\": \"jobs/Rentcars/${appName}/${env.BRANCH_NAME}/${env.BUILD_NUMBER}/${env.BUILD_TAG}.tar.gz\"," +
-  "    \"bundleType\": \"tgz\"" +
-  "  }" +
-  "}' | tee output.json"
-  sh "waitDeploy output.json ${appRegion}"
-}
-```
+Bash utility (v1.6.8) to tail logs from multiple Kubernetes pods simultaneously, with color coding, label selectors, jq parsing, and namespace/context support. Includes bash completion.
 
-# gitlab-autoclone.sh
+### techmago-settings
 
-Script to clone all repos from some gitlab organization.
+Noarch RPM that deploys custom system settings (skel files, yum repo definitions, profile.d hooks) for RHEL 8 and RHEL 9. Each variant has a `pack.sh` build script and a `workdir/` tree.
 
-# github-repolist.php
+---
 
-Script to clone all repos from some github organization.
+## License
 
-# checkMemory.sh
-
-Calculates and return the true memory used by the system. Usefull for monitoring scripts (Made for an old cacti server)
-
-# custom.php
-
-Custom healthcheck. It returns the CPU load true memory usage and some trivial data from the machine. Made as a custom health check for AWS. The return is curl-friendly.
-
-```sh
-luis.brandao@pc144 ~ $ curl 192.168.1.161/custom.php
-Used memory: 64%
-5 min load: 0.34
-Number of cores 4
-```
-
-# fedoraInstall
-
-My set of pos-install scripts for fedora.
-
-# bucket.sh
-
-Scripts to automate some bucket operations
-
-# posdeploy.sh
-Pos-deploy branch sync script.
+Personal/internal use. See individual scripts for upstream licenses (e.g., kubetail, Solr).
