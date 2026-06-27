@@ -1,294 +1,207 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3.11
+"""Simple HTTP Server with Upload Support.
 
-"""Simple HTTP Server With Upload.
+Modernized Python 3 version of the original SimpleHTTPServerWithUpload.
+Serves files from a directory tree and accepts file uploads via POST.
 
-This module builds on BaseHTTPServer by implementing the standard GET
-and HEAD requests in a fairly straightforward manner.
-
+Usage:
+    python3 ftpython.py              # Serve current dir on port 8000
+    python3 ftpython.py 8080         # Serve current dir on port 8080
+    python3 ftpython.py /path/to/dir # Serve specified dir on port 8000
+    python3 ftpython.py /path/to/dir 9000  # Serve specified dir on port 9000
 """
 
+__version__ = "2.0"
 
-__version__ = "0.1"
-__all__ = ["SimpleHTTPRequestHandler"]
-__author__ = "bones7456"
-__home_page__ = "http://li2z.cn/"
-
+import argparse
+import cgi
+import html
+import io
+import mimetypes
 import os
 import posixpath
-import BaseHTTPServer
-import urllib
-import cgi
 import shutil
-import mimetypes
-import re
-try:
-    from cStringIO import StringIO
-except ImportError:
-    from StringIO import StringIO
+import sys
+from http.server import HTTPServer, SimpleHTTPRequestHandler
+from urllib.parse import quote, unquote
 
 
-class SimpleHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
+class UploadRequestHandler(SimpleHTTPRequestHandler):
+    """HTTP request handler with GET/HEAD/POST (upload) support."""
 
-    """Simple HTTP request handler with GET/HEAD/POST commands.
+    server_version = f"SimpleHTTPWithUpload/{__version__}"
 
-    This serves files from the current directory and any of its
-    subdirectories.  The MIME type for files is determined by
-    calling the .guess_type() method. And can reveive file uploaded
-    by client.
+    # Override directory_listing to include an upload form
+    def list_directory(self, path):
+        """Produce a directory listing with an upload form."""
+        try:
+            listings = os.listdir(path)
+        except PermissionError:
+            self.send_error(403, "No permission to list directory")
+            return
 
-    The GET/HEAD/POST requests are identical except that the HEAD
-    request omits the actual contents of the file.
+        listings.sort(key=lambda a: a.lower())
+        displaypath = html.escape(unquote(self.path))
 
-    """
+        content = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Directory listing for {displaypath}</title>
+<style>
+  body {{ font-family: system-ui, -apple-system, sans-serif; margin: 2em; background: #f8f9fa; color: #212529; }}
+  h1 {{ font-size: 1.5em; border-bottom: 1px solid #dee2e6; padding-bottom: 0.5em; }}
+  a {{ color: #0d6efd; text-decoration: none; }}
+  a:hover {{ text-decoration: underline; }}
+  ul {{ list-style: none; padding: 0; }}
+  li {{ padding: 0.25em 0; border-bottom: 1px solid #e9ecef; }}
+  li.dir > a::after {{ content: " /"; color: #6c757d; }}
+  li.link > a::after {{ content: " @"; color: #fd7e14; }}
+  form {{ margin: 1.5em 0; padding: 1em; background: #fff; border: 1px solid #dee2e6; border-radius: 6px; }}
+  input[type="file"] {{ margin-right: 0.5em; }}
+  button {{ background: #0d6efd; color: #fff; border: none; padding: 0.4em 1em; border-radius: 4px; cursor: pointer; }}
+  button:hover {{ background: #0b5ed7; }}
+  small {{ color: #6c757d; }}
+</style>
+</head>
+<body>
+<h1>Directory listing for {displaypath}</h1>
+<form enctype="multipart/form-data" method="post">
+  <input name="file" type="file"/>
+  <button type="submit">Upload</button>
+</form>
+<ul>
+"""
+        for name in listings:
+            fullname = os.path.join(path, name)
+            linkname = name
+            classes = []
 
-    server_version = "SimpleHTTPWithUpload/" + __version__
+            if os.path.isdir(fullname):
+                linkname = name + "/"
+                classes.append("dir")
+            if os.path.islink(fullname):
+                classes.append("link")
 
-    def do_GET(self):
-        """Serve a GET request."""
-        f = self.send_head()
-        if f:
-            self.copyfile(f, self.wfile)
-            f.close()
+            class_attr = f' class="{" ".join(classes)}"' if classes else ""
+            content += f'<li{class_attr}><a href="{quote(linkname)}">{html.escape(name)}</a></li>\n'
 
-    def do_HEAD(self):
-        """Serve a HEAD request."""
-        f = self.send_head()
-        if f:
-            f.close()
+        content += """</ul>
+<small>SimpleHTTPWithUpload/{version}</small>
+</body>
+</html>""".format(version=__version__)
+
+        encoded = content.encode("utf-8")
+        self.send_response(200)
+        self.send_header("Content-type", "text/html; charset=utf-8")
+        self.send_header("Content-Length", str(len(encoded)))
+        self.end_headers()
+        self.wfile.write(encoded)
 
     def do_POST(self):
-        """Serve a POST request."""
-        r, info = self.deal_post_data()
-        print r, info, "by: ", self.client_address
-        f = StringIO()
-        f.write('<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">')
-        f.write("<html>\n<title>Upload Result Page</title>\n")
-        f.write("<body>\n<h2>Upload Result Page</h2>\n")
-        f.write("<hr>\n")
-        if r:
-            f.write("<strong>Success:</strong>")
-        else:
-            f.write("<strong>Failed:</strong>")
-        f.write(info)
-        f.write("<br><a href=\"%s\">back</a>" % self.headers['referer'])
-        f.write("<hr><small>Powerd By: bones7456, check new version at ")
-        f.write("<a href=\"http://li2z.cn/?s=SimpleHTTPServerWithUpload\">")
-        f.write("here</a>.</small></body>\n</html>\n")
-        length = f.tell()
-        f.seek(0)
-        self.send_response(200)
-        self.send_header("Content-type", "text/html")
-        self.send_header("Content-Length", str(length))
-        self.end_headers()
-        if f:
-            self.copyfile(f, self.wfile)
-            f.close()
-
-    def deal_post_data(self):
-        boundary = self.headers.plisttext.split("=")[1]
-        remainbytes = int(self.headers['content-length'])
-        line = self.rfile.readline()
-        remainbytes -= len(line)
-        if not boundary in line:
-            return (False, "Content NOT begin with boundary")
-        line = self.rfile.readline()
-        remainbytes -= len(line)
-        fn = re.findall(r'Content-Disposition.*name="file"; filename="(.*)"', line)
-        if not fn:
-            return (False, "Can't find out file name...")
-        path = self.translate_path(self.path)
-        fn = os.path.join(path, fn[0])
-        line = self.rfile.readline()
-        remainbytes -= len(line)
-        line = self.rfile.readline()
-        remainbytes -= len(line)
+        """Handle file upload via POST multipart/form-data."""
         try:
-            out = open(fn, 'wb')
-        except IOError:
-            return (False, "Can't create file to write, do you have permission to write?")
+            content_type = self.headers.get("Content-Type", "")
+            if "multipart/form-data" not in content_type:
+                self.send_error(400, "Expected multipart/form-data")
+                return
 
-        preline = self.rfile.readline()
-        remainbytes -= len(preline)
-        while remainbytes > 0:
-            line = self.rfile.readline()
-            remainbytes -= len(line)
-            if boundary in line:
-                preline = preline[0:-1]
-                if preline.endswith('\r'):
-                    preline = preline[0:-1]
-                out.write(preline)
-                out.close()
-                return (True, "File '%s' upload success!" % fn)
-            else:
-                out.write(preline)
-                preline = line
-        return (False, "Unexpect Ends of data.")
+            # Parse the multipart form data
+            pd = cgi.FieldStorage(
+                fp=self.rfile,
+                headers=self.headers,
+                environ={
+                    "REQUEST_METHOD": "POST",
+                    "CONTENT_TYPE": content_type,
+                }
+            )
 
-    def send_head(self):
-        """Common code for GET and HEAD commands.
+            file_item = pd["file"]
+            if not file_item.filename:
+                self.send_error(400, "No filename provided")
+                return
 
-        This sends the response code and MIME headers.
+            # Security: strip path components from uploaded filename
+            filename = os.path.basename(file_item.filename)
+            upload_path = os.path.join(self.directory, filename)
 
-        Return value is either a file object (which has to be copied
-        to the outputfile by the caller unless the command was HEAD,
-        and must be closed by the caller under all circumstances), or
-        None, in which case the caller has nothing further to do.
+            # Read and write the file
+            with open(upload_path, "wb") as out:
+                while True:
+                    chunk = file_item.file.read(65536)
+                    if not chunk:
+                        break
+                    out.write(chunk)
 
-        """
-        path = self.translate_path(self.path)
-        f = None
-        if os.path.isdir(path):
-            if not self.path.endswith('/'):
-                # redirect browser - doing basically what apache does
-                self.send_response(301)
-                self.send_header("Location", self.path + "/")
-                self.end_headers()
-                return None
-            for index in "index.html", "index.htm":
-                index = os.path.join(path, index)
-                if os.path.exists(index):
-                    path = index
-                    break
-            else:
-                return self.list_directory(path)
-        ctype = self.guess_type(path)
-        try:
-            # Always read in binary mode. Opening files in text mode may cause
-            # newline translations, making the actual size of the content
-            # transmitted *less* than the content-length!
-            f = open(path, 'rb')
-        except IOError:
-            self.send_error(404, "File not found")
-            return None
-        self.send_response(200)
-        self.send_header("Content-type", ctype)
-        fs = os.fstat(f.fileno())
-        self.send_header("Content-Length", str(fs[6]))
-        self.send_header("Last-Modified", self.date_time_string(fs.st_mtime))
-        self.end_headers()
-        return f
+            filesize = os.path.getsize(upload_path)
+            referer = self.headers.get("Referer", "/")
 
-    def list_directory(self, path):
-        """Helper to produce a directory listing (absent index.html).
+            result_html = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Upload Result</title>
+<style>
+  body {{ font-family: system-ui, -apple-system, sans-serif; margin: 2em; }}
+  .success {{ color: #198754; }}
+  h2 {{ border-bottom: 1px solid #dee2e6; padding-bottom: 0.5em; }}
+</style>
+</head>
+<body>
+<h2>Upload Result</h2>
+<p class="success"><strong>Success:</strong> File '{html.escape(filename)}' uploaded ({filesize:,} bytes)</p>
+<a href="{html.escape(referer)}">Back</a>
+</body>
+</html>"""
 
-        Return value is either a file object, or None (indicating an
-        error).  In either case, the headers are sent, making the
-        interface the same as for send_head().
+            encoded = result_html.encode("utf-8")
+            self.send_response(200)
+            self.send_header("Content-type", "text/html; charset=utf-8")
+            self.send_header("Content-Length", str(len(encoded)))
+            self.end_headers()
+            self.wfile.write(encoded)
 
-        """
-        try:
-            list = os.listdir(path)
-        except os.error:
-            self.send_error(404, "No permission to list directory")
-            return None
-        list.sort(key=lambda a: a.lower())
-        f = StringIO()
-        displaypath = cgi.escape(urllib.unquote(self.path))
-        f.write('<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">')
-        f.write("<html>\n<title>Directory listing for %s</title>\n" % displaypath)
-        f.write("<body>\n<h2>Directory listing for %s</h2>\n" % displaypath)
-        f.write("<hr>\n")
-        f.write("<form ENCTYPE=\"multipart/form-data\" method=\"post\">")
-        f.write("<input name=\"file\" type=\"file\"/>")
-        f.write("<input type=\"submit\" value=\"upload\"/></form>\n")
-        f.write("<hr>\n<ul>\n")
-        for name in list:
-            fullname = os.path.join(path, name)
-            displayname = linkname = name
-            # Append / for directories or @ for symbolic links
-            if os.path.isdir(fullname):
-                displayname = name + "/"
-                linkname = name + "/"
-            if os.path.islink(fullname):
-                displayname = name + "@"
-                # Note: a link to a directory displays with @ and links with /
-            f.write('<li><a href="%s">%s</a>\n'
-                    % (urllib.quote(linkname), cgi.escape(displayname)))
-        f.write("</ul>\n<hr>\n</body>\n</html>\n")
-        length = f.tell()
-        f.seek(0)
-        self.send_response(200)
-        self.send_header("Content-type", "text/html")
-        self.send_header("Content-Length", str(length))
-        self.end_headers()
-        return f
+            print(f"Uploaded {filename} ({filesize:,} bytes) by {self.client_address}")
 
-    def translate_path(self, path):
-        """Translate a /-separated PATH to the local filename syntax.
-
-        Components that mean special things to the local file system
-        (e.g. drive or directory names) are ignored.  (XXX They should
-        probably be diagnosed.)
-
-        """
-        # abandon query parameters
-        path = path.split('?',1)[0]
-        path = path.split('#',1)[0]
-        path = posixpath.normpath(urllib.unquote(path))
-        words = path.split('/')
-        words = filter(None, words)
-        path = os.getcwd()
-        for word in words:
-            drive, word = os.path.splitdrive(word)
-            head, word = os.path.split(word)
-            if word in (os.curdir, os.pardir): continue
-            path = os.path.join(path, word)
-        return path
-
-    def copyfile(self, source, outputfile):
-        """Copy all data between two file objects.
-
-        The SOURCE argument is a file object open for reading
-        (or anything with a read() method) and the DESTINATION
-        argument is a file object open for writing (or
-        anything with a write() method).
-
-        The only reason for overriding this would be to change
-        the block size or perhaps to replace newlines by CRLF
-        -- note however that this the default server uses this
-        to copy binary data as well.
-
-        """
-        shutil.copyfileobj(source, outputfile)
-
-    def guess_type(self, path):
-        """Guess the type of a file.
-
-        Argument is a PATH (a filename).
-
-        Return value is a string of the form type/subtype,
-        usable for a MIME Content-type header.
-
-        The default implementation looks the file's extension
-        up in the table self.extensions_map, using application/octet-stream
-        as a default; however it would be permissible (if
-        slow) to look inside the data to make a better guess.
-
-        """
-
-        base, ext = posixpath.splitext(path)
-        if ext in self.extensions_map:
-            return self.extensions_map[ext]
-        ext = ext.lower()
-        if ext in self.extensions_map:
-            return self.extensions_map[ext]
-        else:
-            return self.extensions_map['']
-
-    if not mimetypes.inited:
-        mimetypes.init() # try to read system mime.types
-    extensions_map = mimetypes.types_map.copy()
-    extensions_map.update({
-        '': 'application/octet-stream', # Default
-        '.py': 'text/plain',
-        '.c': 'text/plain',
-        '.h': 'text/plain',
-        })
+        except KeyError as e:
+            self.send_error(400, f"Missing form field: {e}")
+        except PermissionError:
+            self.send_error(403, "Permission denied")
+        except Exception as e:
+            self.send_error(500, f"Upload failed: {e}")
 
 
-def test(HandlerClass = SimpleHTTPRequestHandler,
-         ServerClass = BaseHTTPServer.HTTPServer):
-    BaseHTTPServer.test(HandlerClass, ServerClass)
+def run(server_class=HTTPServer, handler_class=UploadRequestHandler):
+    """Run the HTTP server."""
+    parser = argparse.ArgumentParser(
+        description="Simple HTTP Server with Upload Support"
+    )
+    parser.add_argument(
+        "directory", nargs="?", default=".",
+        help="Directory to serve (default: current directory)"
+    )
+    parser.add_argument(
+        "port", nargs="?", type=int, default=8000,
+        help="Port to listen on (default: 8000)"
+    )
+    args = parser.parse_args()
 
-if __name__ == '__main__':
-    test()
+    # Set the directory on the handler class (required by SimpleHTTPRequestHandler)
+    handler_class.directory = os.path.abspath(args.directory)
+
+    server_address = ("", args.port)
+    httpd = server_class(server_address, handler_class)
+
+    print(f"Serving {handler_class.directory} on port {args.port}")
+    print(f"Press Ctrl+C to stop.")
+
+    try:
+        httpd.serve_forever()
+    except KeyboardInterrupt:
+        print("\nShutting down.")
+        httpd.server_close()
+
+
+if __name__ == "__main__":
+    run()
