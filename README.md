@@ -68,16 +68,61 @@ Each Rocky directory also ships repo definitions (`repos/`) and config files (`c
 
 ### scripts/nexus-repository/
 
-Tools to list and delete artifacts from Sonatype Nexus Repository Manager (REST API v1). All prompt for confirmation before deleting.
+Nexus Repository Manager artifact cleanup tools using REST API v1. All scripts support dry-run previews and confirmation prompts before deletion.
 
-| Script | Format | Notes |
+**Dependencies:** `pip install requests tqdm` (see `requirements.txt`)
+
+#### Main Script: `nexus-clean.py`
+
+Unified Python 3.11 tool with subcommands for each repository type. Replaces all legacy shell/Python scripts.
+
+```bash
+# Docker — list images matching version patterns
+./nexus-clean.py docker local-registry acc-backend "blue-*" "purple-*"
+
+# Docker — delete, keeping last 5 versions
+./nexus-clean.py docker local-registry acc-backend "blue-*" --keep 5 --apply -y
+
+# Maven — delete artifacts by group + version patterns
+./nexus-clean.py maven releases br.com.example.acc "green-*" "purple.*" --apply
+
+# Static — delete frontend builds, keeping last 3
+./nexus-clean.py static static-repo core "v1.2-*" --keep 3 --apply
+
+# Generic — delete by path substring match
+./nexus-clean.py generic -r my-repo -p "-73" --apply -y
+
+# Any subcommand — preview without deleting
+./nexus-clean.py docker local-registry acc-backend "blue-*" --dry-run
+```
+
+**Common options:** `-u/--url` (Nexus URL), `--user`/`--password` (or `$NEXUS_USER`/`$NEXUS_PASS`), `-y/--yes` (skip confirmation), `--dry-run`, `--debug`, `--keep N` (retention policy).
+
+**Credential resolution** (in order of precedence):
+1. CLI arguments (`--url`, `--user`, `--password`)
+2. Environment variables (`$NEXUS_URL`, `$NEXUS_USER`, `$NEXUS_PASS`)
+3. `.env` file in current directory or `~/.nexus-clean.env` (KEY=VALUE format)
+4. Interactive prompt (for username/password only)
+
+To set up persistent credentials, copy `.env.example` to `.env` and fill in your values:
+```bash
+cp .env.example .env
+# Edit .env with your Nexus URL, user, and password
+# The .env file is excluded from Git via .gitignore
+```
+
+#### Legacy Wrappers (backward-compatible)
+
+All old scripts now delegate to `nexus-clean.py` — same CLI arguments, modernized backend:
+
+| Script | Maps To | Notes |
 |---|---|---|
-| `nexusRMgeneric.py` | any | Generic path-pattern search & delete with `tqdm` progress |
-| `nexusRMversionDocker.sh` | docker | Delete Docker image versions by SHA-256 manifest |
-| `nexusRMversionDockerAuto.py` | docker | Auto-keep last N versions, delete the rest |
-| `nexusRMversionMVN.sh` | maven | Delete Maven artifacts by group + version glob |
-| `nexusRMversionStatic.sh` | static | Delete static `.txz` artifacts by module + version |
-| `nexusRMversionStaticAuto.sh` | static | Same, but auto-keeps the 5 newest |
+| `nexusRMgeneric.py` | `nexus-clean.py generic` | Path-pattern search & delete |
+| `nexusRMversionDocker.sh` | `nexus-clean.py docker` | Docker image cleanup by SHA-256 manifest |
+| `nexusRMversionDockerAuto.py` | `nexus-clean.py docker --keep 5` | Auto-keeps last 5 versions |
+| `nexusRMversionMVN.sh` | `nexus-clean.py maven` | Maven artifacts by group + version glob |
+| `nexusRMversionStatic.sh` | `nexus-clean.py static` | Static `.txz` artifacts by module + version |
+| `nexusRMversionStaticAuto.sh` | `nexus-clean.py static --keep 5` | Same, auto-keeps 5 newest |
 
 ### scripts/ssl/
 

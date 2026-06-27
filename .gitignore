@@ -1,3 +1,10 @@
 all.sh
 scripts/ssl/_tls/*
 *.rpm
+
+# Environment files with credentials (Nexus, AWS, etc.)
+.env
+.env.*
+!.env.example
+.nexus-clean.env
+**/.nexus-clean.env
