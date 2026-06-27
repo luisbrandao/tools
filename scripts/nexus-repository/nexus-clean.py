@@ -314,29 +314,18 @@ def cmd_docker(args) -> int:
     auth_session = requests.Session()
     auth_session.auth = (user, password)
 
-    # Collect blob URLs used by KEPT images (shared layers should not be deleted)
-    kept_blob_urls: set = set()
-    for item in kept:
-        for asset in item.get("assets", []):
-            url = asset.get("downloadUrl", "")
-            if url and "blob" in url:
-                kept_blob_urls.add(url)
-
-    # Build delete URLs: blob layers first, then manifest references
+    # Build delete URLs: delete by tag (downloadUrl) to remove both the
+    # manifest and the tag reference.  The search API returns the tag URL
+    # (e.g. /v2/{name}/manifests/{tag}), not individual blob layers.
+    # Nexus handles blob cleanup internally via its "Docker Cleanup" task.
     urls = []
     for item in to_delete:
-        # Collect all blob layer download URLs from assets
         for asset in item.get("assets", []):
             url = asset.get("downloadUrl", "")
-            if url and "blob" in url and url not in kept_blob_urls:
+            if url:
                 urls.append(url)
 
-        # Finally, delete the manifest reference itself
-        sha = item.get("assets", [{}])[0].get("checksum", {}).get("sha256", "")
-        if sha:
-            urls.append(f"{base}/repository/{repo}/v2/{name}/manifests/sha256:{sha}")
-
-    failures = delete_with_progress(auth_session, urls, label="Deleting Docker assets")
+    failures = delete_with_progress(auth_session, urls, label="Deleting Docker images")
     print(f"\nDone. {len(urls) - failures}/{len(urls)} deleted successfully.")
     return 1 if failures else 0
 
