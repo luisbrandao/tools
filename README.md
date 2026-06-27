@@ -6,12 +6,12 @@ A personal collection of DevOps, sysadmin, and cloud-automation scripts — cove
 
 ```
 tools/
-├── linuxInstall/      # Post-install setup scripts for various distros
-├── packages/          # RPM-packaged utilities (list, kubetail, techmago-settings)
-└── scripts/           # Standalone utility scripts
-    ├── aws/           # AWS automation (EC2, RDS, Route53, CodeDeploy)
+├── linuxInstall/          # Post-install setup scripts for various distros
+├── packages/              # RPM-packaged utilities (list, kubetail, techmago-settings)
+└── scripts/               # Standalone utility scripts
+    ├── aws/               # AWS automation (EC2, RDS, Route53, CodeDeploy)
     ├── nexus-repository/  # Nexus artifact cleanup tools
-    └── ssl/           # OpenSSL PKI generation helpers
+    └── ssl/               # OpenSSL PKI generation helpers
 ```
 
 ---
@@ -42,16 +42,16 @@ Each Rocky directory also ships repo definitions (`repos/`) and config files (`c
 | `custom.php` | php | Curl-friendly HTTP health check returning memory %, load average, core count, uptime |
 | `dnsmasq_stats.py` | python | Parses dnsmasq logs into SQLite and exports Prometheus textfile metrics |
 | `fpm.sh` | bash | Builds a Solr RPM from a directory tree using `fpm` |
-| `ftpython.py` | python | Simple HTTP server with file upload (Python 2 era) |
-| `github-repolist.php` | php | Lists all repos in a GitHub organization (for batch cloning) |
+| `ftpython.py` | python | HTTP file server with upload support (modernized, Python 3.11) |
+| `github-repolist.py` | python | Lists all repos in a GitHub organization via REST API (paginated) |
 | `gitlab-autoclone.sh` | bash | Clones all repos in a GitLab group using an API token |
 | `intCredCheck.rb` | ruby | Validates tenant credentials against an Agrotis platform + SAP Service Layer |
-| `kubeMEMextract.sh` | bash | Summarizes CPU/memory requests across all Kubernetes nodes |
+| `kubeMEMextract.sh` | bash | Kubernetes resource audit — node allocation, namespace breakdown, top pods, and actual-vs-requested usage comparison |
 | `luksMount.sh` | bash | Opens/closes LUKS-encrypted volumes with a random mapper name |
 | `recriaBranch.rb` | ruby | Deletes and recreates GitLab branches (with safety guards on `master`/`deploy`) |
-| `redisTestSource.py` | python | Inspects a Redis source — counts keys by type and prints TTLs |
-| `redisTransfer.py` | python | Copies all keys (string/hash/set, preserving TTL) from one Redis to another |
-| `rpmMassRebuild.sh` | bash | Loops over SRPMs, installs build deps, and rebuilds them |
+| `redisTestSource.py` | python | Redis key audit — scans all keys (non-blocking SCAN), reports type breakdown, TTL distribution, and memory usage |
+| `redisTransfer.py` | python | Redis-to-Redis migration — copies all keys preserving types and TTLs, with progress bar and dry-run mode |
+| `rpmMassRebuild.sh` | bash | Installs build deps and rebuilds all SRPMs in a directory (parallel builds, dry-run, debug-info toggle) |
 | `solr.py` | python | Lists Solr cores, item counts, and triggers data imports |
 | `urlmontor.py` | python | Hash-based website change monitor (compares SHA-224 of page content) |
 | `weblogicDeploy.py` | python (WLST) | WebLogic deployment automation: undeploy existing app, then deploy & start |
