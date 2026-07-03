@@ -81,9 +81,8 @@ alias tm="tail -f /var/log/messages"
 alias l="ls -laF --color=tty"
 alias halt="echo 'use shutdown -h now!!!' ; shutdown -h now"
 alias compress='tar -I "pigz --best" -cvf'
-alias extract="tar xvzf"
-alias xcompress='tar -I "pxz --best" -cvf'
-alias xextract="tar -Jxxvf"
+alias extract="tar xvf"
+alias xcompress='tar -I "xz -T0 -9e" -cvf'
 alias ftpython='echo "Files will be avaliable at $(hostname -I) port 8000" ; ftpython'
 alias tnginx="tail -f /var/log/nginx/*.log /var/log/nginx/*.err"
 alias rbuild="rpmbuild -ba -D 'debug_package %{nil}'"
