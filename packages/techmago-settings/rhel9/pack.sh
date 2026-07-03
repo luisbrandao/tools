@@ -7,7 +7,7 @@ if [ ! ${#} -eq 1 ] ;	then
 fi
 
 NAME=techmago-settings
-VERSION=2.3.0
+VERSION=2.3.1
 ITERATION=${1?}
 ARCHITECTURE=noarch
 LOCAL=$(pwd)
