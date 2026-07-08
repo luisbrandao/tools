@@ -1,0 +1,8 @@
+{
+  "uuid": "ntfy-indicator@techmago",
+  "name": "Ntfy Indicator",
+  "description": "Ícone de painel que consome tópicos de um servidor ntfy: contador de não-lidas, menu com as últimas mensagens e notificações desktop. Config em ~/.config/ntfy-indicator.json",
+  "shell-version": ["40", "41", "42", "43", "44"],
+  "url": "https://github.com/luisbrandao/tools",
+  "version": 1
+}

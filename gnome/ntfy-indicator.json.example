@@ -1,0 +1,7 @@
+{
+  "server": "https://ntfy.example.com",
+  "token": "tk_XXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+  "topics": ["meu-topico"],
+  "poll_seconds": 30,
+  "history_hours": 12
+}
