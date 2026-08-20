@@ -45,6 +45,7 @@ Each Rocky directory also ships repo definitions (`repos/`) and config files (`c
 | `ftpython.py` | python | HTTP file server with upload support (modernized, Python 3.11) |
 | `github-repolist.py` | python | Lists all repos in a GitHub organization via REST API (paginated) |
 | `gitlab-autoclone.sh` | bash | Clones all repos in a GitLab group using an API token |
+| `gitStaleBranches.sh` | bash | Lists remote branches older than N months (`./gitStaleBranches.sh 4`) and deletes them on demand (`--rm`), with protected branches, `--merged`/`--author` filters, and confirmation prompt |
 | `intCredCheck.rb` | ruby | Validates tenant credentials against an Agrotis platform + SAP Service Layer |
 | `kubeMEMextract.sh` | bash | Kubernetes resource audit — node allocation, namespace breakdown, top pods, and actual-vs-requested usage comparison |
 | `luksMount.sh` | bash | Opens/closes LUKS-encrypted volumes with a random mapper name |
