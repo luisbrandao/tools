@@ -8,3 +8,4 @@ scripts/ssl/_tls/*
 !.env.example
 .nexus-clean.env
 **/.nexus-clean.env
+__pycache__/
