@@ -1,0 +1,13 @@
+[Unit]
+Description=tech-fancontrol - custom NVIDIA GPU fan control
+After=multi-user.target
+
+[Service]
+Type=simple
+EnvironmentFile=-/etc/sysconfig/tech-fancontrol
+ExecStart=/usr/bin/python3 -u /usr/sbin/tech-fancontrol
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

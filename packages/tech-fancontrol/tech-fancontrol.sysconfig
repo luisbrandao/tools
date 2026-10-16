@@ -1,0 +1,26 @@
+# tech-fancontrol settings (sourced by tech-fancontrol.service)
+# Everything here is optional — uncomment to override the built-in defaults.
+
+# Fan curve: "temp:speed" pairs, ascending temperature (% is 0-100).
+# Default below (aggressive curve for the Quadro P6000s on gw.brandao):
+#FANCONTROL_CURVE="0:30 40:50 50:60 55:70 60:80 65:85 70:90 74:95 79:100"
+
+# Seconds between temperature polls (default 5)
+#FANCONTROL_REFRESH=5
+
+# Minimum fan speed % — NVIDIA boards accept 30-100 (default 30)
+#FANCONTROL_MIN_SPEED=30
+
+# °C a temperature must drop below a threshold before the fans slow
+# down again; ramps up are immediate (default 2)
+#FANCONTROL_HYSTERESIS=2
+
+# Print a status line every N loops (default 12 → ~60s at REFRESH=5)
+#FANCONTROL_STATUS_INTERVAL=12
+
+# Optional power limit in watts, applied once at start.
+# The 3090s on citrine.brandao are unstable at full power — e.g.:
+#FANCONTROL_POWER_LIMIT_W=280
+
+# 1 = enable persistence mode at start (default off)
+#FANCONTROL_PERSISTENCE=0

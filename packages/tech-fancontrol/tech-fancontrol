@@ -1,0 +1,188 @@
+#!/usr/bin/python3
+###############################################################################
+# tech-fancontrol — custom (aggressive) NVIDIA GPU fan controller via NVML
+#
+#   Each GPU → all its fan zones (auto-detected via nvmlDeviceGetNumFans)
+#
+#   - SIGTERM-safe: restores default fan control on service stop
+#   - NVML errors in the loop → failsafe 100% + retry, process stays alive
+#   - Hysteresis so temps hovering on a threshold don't flap the speed
+#
+#   Settings come from the environment (see /etc/sysconfig/tech-fancontrol):
+#     FANCONTROL_CURVE          "temp:speed temp:speed ..." (ascending)
+#     FANCONTROL_REFRESH        seconds between polls
+#     FANCONTROL_MIN_SPEED      minimum fan speed (%)
+#     FANCONTROL_HYSTERESIS     °C below threshold before slowing down
+#     FANCONTROL_STATUS_INTERVAL   status line every N loops
+#     FANCONTROL_POWER_LIMIT_W  optional power limit in watts, applied at start
+#     FANCONTROL_PERSISTENCE    1 = enable persistence mode at start
+###############################################################################
+
+import os
+import signal
+import time
+
+import pynvml
+
+### DEFAULTS (override via environment / /etc/sysconfig/tech-fancontrol) #####
+REFRESH = 5
+MIN_SPEED = 30
+STATUS_INTERVAL = 12
+HYSTERESIS = 2
+
+# °C → % curve (ascending temperature)
+CURVE = "0:30 40:50 50:60 55:70 60:80 65:85 70:90 74:95 79:100"
+###############################################################################
+
+
+def env_int(name, default):
+    try:
+        return int(os.environ.get(name, default))
+    except ValueError:
+        print(f"bad value for {name}, using default {default}", flush=True)
+        return default
+
+
+def parse_curve(raw):
+    curve = []
+    for pair in raw.split():
+        try:
+            thresh, speed = pair.split(":")
+            curve.append((int(thresh), int(speed)))
+        except ValueError:
+            raise SystemExit(f"bad FANCONTROL_CURVE entry: {pair!r}")
+    if not curve:
+        raise SystemExit("empty FANCONTROL_CURVE")
+    return sorted(curve)
+
+
+REFRESH = env_int("FANCONTROL_REFRESH", REFRESH)
+MIN_SPEED = env_int("FANCONTROL_MIN_SPEED", MIN_SPEED)
+STATUS_INTERVAL = env_int("FANCONTROL_STATUS_INTERVAL", STATUS_INTERVAL)
+HYSTERESIS = env_int("FANCONTROL_HYSTERESIS", HYSTERESIS)
+CURVE = parse_curve(os.environ.get("FANCONTROL_CURVE", CURVE))
+POWER_LIMIT_W = os.environ.get("FANCONTROL_POWER_LIMIT_W", "").strip()
+PERSISTENCE = os.environ.get("FANCONTROL_PERSISTENCE", "").strip() == "1"
+
+stop_requested = False
+
+
+def handle_sigterm(signum, frame):
+    global stop_requested
+    stop_requested = True
+
+
+def map_temp_to_speed(temp):
+    best = MIN_SPEED
+    for thresh, speed in CURVE:
+        if temp >= thresh:
+            best = speed
+        else:
+            break
+    return best
+
+
+def set_fan_speed(handle, num_fans, speed):
+    for fan in range(num_fans):
+        pynvml.nvmlDeviceSetFanSpeed_v2(handle, fan, speed)
+
+
+def restore_default(gpus):
+    for gpu in gpus:
+        for fan in range(gpu["fans"]):
+            try:
+                pynvml.nvmlDeviceSetDefaultFanSpeed_v2(gpu["handle"], fan)
+            except pynvml.NVMLError:
+                pass
+
+
+def apply_start_options(handle, index):
+    if PERSISTENCE:
+        try:
+            pynvml.nvmlDeviceSetPersistence(handle, 1)
+            print(f"GPU-{index}: persistence mode enabled", flush=True)
+        except pynvml.NVMLError as e:
+            print(f"GPU-{index}: persistence mode failed ({e})", flush=True)
+    if POWER_LIMIT_W:
+        try:
+            watts = int(POWER_LIMIT_W)
+            pynvml.nvmlDeviceSetPowerManagementLimit(handle, watts * 1000)
+            print(f"GPU-{index}: power limit set to {watts}W", flush=True)
+        except (ValueError, pynvml.NVMLError) as e:
+            print(f"GPU-{index}: power limit {POWER_LIMIT_W} failed ({e})", flush=True)
+
+
+def main():
+    signal.signal(signal.SIGTERM, handle_sigterm)
+
+    gpus = []
+    while not gpus and not stop_requested:
+        try:
+            pynvml.nvmlInit()
+            gpu_count = pynvml.nvmlDeviceGetCount()
+            for i in range(gpu_count):
+                h = pynvml.nvmlDeviceGetHandleByIndex(i)
+                name = pynvml.nvmlDeviceGetName(h)
+                fans = pynvml.nvmlDeviceGetNumFans(h)
+                print(f"GPU-{i}: {name}, {fans} fan(s)", flush=True)
+                apply_start_options(h, i)
+                gpus.append({"handle": h, "fans": fans, "last_speed": None})
+        except pynvml.NVMLError as e:
+            print(f"NVML init failed ({e}), retrying in 10s", flush=True)
+            time.sleep(10)
+
+    if stop_requested:
+        return
+
+    print(f"\nManual fan control engaged. Polling every {REFRESH}s\n", flush=True)
+
+    loop_count = 0
+
+    try:
+        while not stop_requested:
+            for i, gpu in enumerate(gpus):
+                try:
+                    temp = pynvml.nvmlDeviceGetTemperature(gpu["handle"], 0)
+                except pynvml.NVMLError as e:
+                    # Failsafe: blast the fans, log, keep the process alive
+                    print(f"GPU-{i}: temp read failed ({e}); failsafe 100%", flush=True)
+                    try:
+                        set_fan_speed(gpu["handle"], gpu["fans"], 100)
+                        gpu["last_speed"] = 100
+                    except pynvml.NVMLError:
+                        pass
+                    continue
+
+                # Hysteresis: slow down only when temp is HYSTERESIS °C
+                # below a threshold; ramp up immediately.
+                mapped_temp = temp if temp >= gpu.get("last_temp", 0) else temp - HYSTERESIS
+                speed = map_temp_to_speed(mapped_temp)
+                gpu["last_temp"] = temp
+
+                if speed != gpu["last_speed"]:
+                    try:
+                        set_fan_speed(gpu["handle"], gpu["fans"], speed)
+                        gpu["last_speed"] = speed
+                        print(f"GPU-{i} fan speed changed: temp={temp}C speed={speed}%", flush=True)
+                    except pynvml.NVMLError as e:
+                        print(f"GPU-{i}: set speed failed ({e})", flush=True)
+
+                gpu["current_temp"] = temp
+                gpu["current_speed"] = speed
+
+            loop_count += 1
+            if loop_count % STATUS_INTERVAL == 0:
+                parts = [f"GPU-{i}: {g.get('current_temp', '?')}C/{g.get('current_speed', '?')}%"
+                         for i, g in enumerate(gpus)]
+                print(f"Status: {' | '.join(parts)}", flush=True)
+
+            time.sleep(REFRESH)
+    finally:
+        print("Restoring automatic fan control...", flush=True)
+        restore_default(gpus)
+        pynvml.nvmlShutdown()
+        print("Done.", flush=True)
+
+
+if __name__ == "__main__":
+    main()
