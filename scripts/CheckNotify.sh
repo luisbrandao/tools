@@ -40,7 +40,7 @@ case "$HOST" in
     citrine)
         SERVICES=(sshd docker smartd node_exporter promtail chronyd)
         ;;
-    luis)
+    fireopal)
         SERVICES=(sshd docker smartd netbird node_exporter promtail chronyd)
         ;;
     *)
